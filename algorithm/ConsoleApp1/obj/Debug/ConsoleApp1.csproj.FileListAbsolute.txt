@@ -1,0 +1,6 @@
+E:\GitHubRepos\Algorithm\algorithm\ConsoleApp1\bin\Debug\ConsoleApp1.exe.config
+E:\GitHubRepos\Algorithm\algorithm\ConsoleApp1\bin\Debug\ConsoleApp1.exe
+E:\GitHubRepos\Algorithm\algorithm\ConsoleApp1\bin\Debug\ConsoleApp1.pdb
+E:\GitHubRepos\Algorithm\algorithm\ConsoleApp1\obj\Debug\ConsoleApp1.csprojResolveAssemblyReference.cache
+E:\GitHubRepos\Algorithm\algorithm\ConsoleApp1\obj\Debug\ConsoleApp1.exe
+E:\GitHubRepos\Algorithm\algorithm\ConsoleApp1\obj\Debug\ConsoleApp1.pdb

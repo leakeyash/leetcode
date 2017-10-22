@@ -1,0 +1,9 @@
+E:\GitHubRepos\Algorithm\algorithm\AlgorithmInCS\bin\Debug\netcoreapp1.1\AlgorithmInCS.deps.json
+E:\GitHubRepos\Algorithm\algorithm\AlgorithmInCS\bin\Debug\netcoreapp1.1\AlgorithmInCS.runtimeconfig.json
+E:\GitHubRepos\Algorithm\algorithm\AlgorithmInCS\bin\Debug\netcoreapp1.1\AlgorithmInCS.runtimeconfig.dev.json
+E:\GitHubRepos\Algorithm\algorithm\AlgorithmInCS\bin\Debug\netcoreapp1.1\AlgorithmInCS.dll
+E:\GitHubRepos\Algorithm\algorithm\AlgorithmInCS\bin\Debug\netcoreapp1.1\AlgorithmInCS.pdb
+E:\GitHubRepos\Algorithm\algorithm\AlgorithmInCS\obj\Debug\netcoreapp1.1\AlgorithmInCS.csprojResolveAssemblyReference.cache
+E:\GitHubRepos\Algorithm\algorithm\AlgorithmInCS\obj\Debug\netcoreapp1.1\AlgorithmInCS.AssemblyInfo.cs
+E:\GitHubRepos\Algorithm\algorithm\AlgorithmInCS\obj\Debug\netcoreapp1.1\AlgorithmInCS.dll
+E:\GitHubRepos\Algorithm\algorithm\AlgorithmInCS\obj\Debug\netcoreapp1.1\AlgorithmInCS.pdb
