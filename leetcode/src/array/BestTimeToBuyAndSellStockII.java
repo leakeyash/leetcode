@@ -1,9 +1,9 @@
 package array;
 
-public class MaxProfit {
+public class BestTimeToBuyAndSellStockII {
     public static void main(String[] args) {
         int[] prices = new int[]{7,1,5,3,6,4};
-        System.out.println(new MaxProfit().maxProfit(prices));
+        System.out.println(new BestTimeToBuyAndSellStockII().maxProfit(prices));
     }
 
     public int maxProfit(int[] prices) {

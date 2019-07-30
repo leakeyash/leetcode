@@ -1,31 +1,31 @@
 package string;
 
-public class AToI {
+public class StringToIntegerATOI {
     private int maxInt = 2147483647;
 
     public static void main(String[] args) {
         System.out.println('2' - '0');
         System.out.println(Integer.MAX_VALUE);
         //42
-        System.out.println(new AToI().myAtoi("42"));
+        System.out.println(new StringToIntegerATOI().myAtoi("42"));
         //-42
-        System.out.println(new AToI().myAtoi("   -42"));
+        System.out.println(new StringToIntegerATOI().myAtoi("   -42"));
         //4193
-        System.out.println(new AToI().myAtoi("4193 with words"));
+        System.out.println(new StringToIntegerATOI().myAtoi("4193 with words"));
         //0
-        System.out.println(new AToI().myAtoi("words and 987"));
+        System.out.println(new StringToIntegerATOI().myAtoi("words and 987"));
         //-2147483648
-        System.out.println(new AToI().myAtoi("-91283472332"));
+        System.out.println(new StringToIntegerATOI().myAtoi("-91283472332"));
         //-2147483647
-        System.out.println(new AToI().myAtoi("-2147483647"));
+        System.out.println(new StringToIntegerATOI().myAtoi("-2147483647"));
         //12345678
-        System.out.println(new AToI().myAtoi("  0000000000012345678"));
+        System.out.println(new StringToIntegerATOI().myAtoi("  0000000000012345678"));
         //-12345678
-        System.out.println(new AToI().myAtoi("  -0000000000012345678"));
+        System.out.println(new StringToIntegerATOI().myAtoi("  -0000000000012345678"));
         //0
-        System.out.println(new AToI().myAtoi("000000000000000000"));
+        System.out.println(new StringToIntegerATOI().myAtoi("000000000000000000"));
         //0
-        System.out.println(new AToI().myAtoi("+-2"));
+        System.out.println(new StringToIntegerATOI().myAtoi("+-2"));
     }
 
     public int myAtoi(String str) {

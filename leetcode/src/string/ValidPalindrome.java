@@ -1,10 +1,10 @@
 package string;
 
-public class IsPalindrome {
+public class ValidPalindrome {
     public static void main(String[] args) {
-        System.out.println(new IsPalindrome().isPalindrome("A man, a plan, a canal: Panama"));
-        System.out.println(new IsPalindrome().isPalindrome("race a car"));
-        System.out.println(new IsPalindrome().isPalindrome("0-P0,"));
+        System.out.println(new ValidPalindrome().isPalindrome("A man, a plan, a canal: Panama"));
+        System.out.println(new ValidPalindrome().isPalindrome("race a car"));
+        System.out.println(new ValidPalindrome().isPalindrome("0-P0,"));
     }
     public boolean isPalindrome(String s) {
         char[] chars = s.toLowerCase().toCharArray();

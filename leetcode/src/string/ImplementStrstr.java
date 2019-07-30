@@ -1,20 +1,20 @@
 package string;
 
-public class StrStr {
+public class ImplementStrstr {
     public static void main(String[] args) {
-        int value = new StrStr().strStr("hello","ll");
+        int value = new ImplementStrstr().strStr("hello","ll");
         System.out.println(value);
         assert value == 2;
-        System.out.println(new StrStr().strStr("aaaaa","bba"));
-        System.out.println(new StrStr().strStr("aaa","aaaaa"));
-        System.out.println(new StrStr().strStr("a","a"));
-        System.out.println(new StrStr().strStr("mississippi","issip"));
+        System.out.println(new ImplementStrstr().strStr("aaaaa","bba"));
+        System.out.println(new ImplementStrstr().strStr("aaa","aaaaa"));
+        System.out.println(new ImplementStrstr().strStr("a","a"));
+        System.out.println(new ImplementStrstr().strStr("mississippi","issip"));
 
-        System.out.println(new StrStr().strStr1("hello","ll"));
-        System.out.println(new StrStr().strStr1("aaaaa","bba"));
-        System.out.println(new StrStr().strStr1("aaa","aaaaa"));
-        System.out.println(new StrStr().strStr1("a","a"));
-        System.out.println(new StrStr().strStr1("mississippi","issip"));
+        System.out.println(new ImplementStrstr().strStr1("hello","ll"));
+        System.out.println(new ImplementStrstr().strStr1("aaaaa","bba"));
+        System.out.println(new ImplementStrstr().strStr1("aaa","aaaaa"));
+        System.out.println(new ImplementStrstr().strStr1("a","a"));
+        System.out.println(new ImplementStrstr().strStr1("mississippi","issip"));
     }
     public int strStr(String haystack, String needle) {
         if(needle == null || needle.length() == 0){

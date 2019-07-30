@@ -1,14 +1,12 @@
 package string;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Queue;
 
-public class FirstUniqChar {
+public class FirstUniqueCharacterInAString {
     public static void main(String[] args) {
-        System.out.println(new FirstUniqChar().firstUniqChar("lovveleettccodde"));
-        System.out.println(new FirstUniqChar().firstUniqChar2("lovveleettccodde"));
+        System.out.println(new FirstUniqueCharacterInAString().firstUniqChar("lovveleettccodde"));
+        System.out.println(new FirstUniqueCharacterInAString().firstUniqChar2("lovveleettccodde"));
     }
     public int firstUniqChar(String s) {
         HashMap<Character,Integer> map = new HashMap<>(s.length());

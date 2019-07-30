@@ -2,10 +2,10 @@ package string;
 
 import java.util.HashMap;
 
-public class IsAnagram {
+public class ValidAnagram {
     public static void main(String[] args) {
-        System.out.println(new IsAnagram().isAnagram("anagram", "nagaram"));
-        System.out.println(new IsAnagram().isAnagram("", ""));
+        System.out.println(new ValidAnagram().isAnagram("anagram", "nagaram"));
+        System.out.println(new ValidAnagram().isAnagram("", ""));
     }
 
     public boolean isAnagram(String s, String t) {

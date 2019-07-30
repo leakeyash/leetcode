@@ -1,8 +1,8 @@
 package string;
 
-public class ReverseNumber {
+public class ReverseInteger {
     public static void main(String[] args) {
-        System.out.println(new ReverseNumber().reverse(1163847412));
+        System.out.println(new ReverseInteger().reverse(1163847412));
     }
 
     public int reverse(int x) {
