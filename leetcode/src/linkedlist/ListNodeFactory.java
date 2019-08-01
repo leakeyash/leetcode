@@ -23,6 +23,6 @@ public class ListNodeFactory {
                 System.out.print("->");
             }
         }
-
+        System.out.println();
     }
 }
