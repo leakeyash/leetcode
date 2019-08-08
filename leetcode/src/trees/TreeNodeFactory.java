@@ -24,25 +24,26 @@ public class TreeNodeFactory {
         }
         int nullCount = 0;
         int size = treeNodes.length;
+        StringBuilder sb = new StringBuilder();
         TreeNode[] temps = new TreeNode[2*size];
         for (int i = 0; i < size; i++) {
             TreeNode treeNode = treeNodes[i];
             if(i!=0){
-                System.out.print("->");
+                sb.append("->");
             }
             if(treeNode == null){
                 temps[2*i] = null;
                 temps[2*i + 1] = null;
                 nullCount ++;
-                System.out.print("null");
+                sb.append("null");
             } else{
-                System.out.print(treeNode.val);
+                sb.append(treeNode.val);
                 temps[2*i] = treeNode.left;
                 temps[2*i + 1] = treeNode.right;
             }
         }
-        System.out.println();
         if(nullCount != size){
+            System.out.println(sb);
             printTreeAsHierarchy(temps);
         }
     }
