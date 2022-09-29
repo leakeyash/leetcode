@@ -30,6 +30,46 @@ public class Solution {
       //  new Solution().goodIndices(new int[] {2,1,1,1,3,4,1}, 2);
         new Solution().isSubsequence("acb", "ahbgdc");
     }
+    public String reverseWords(String s) {
+        char[] ch=s.toCharArray();
+        int len=s.length();
+        int i=0,j=0;
+        while(j<len){
+            while(j<len&&ch[j]!=' '){
+                j++;
+            }
+            int k=j-1;
+            while(i<k){
+                swap(ch,i,k);
+                i++;
+                k--;
+            }
+            j++;
+            i=j;
+        }
+        return new String(ch);
+    }
+    private void swap(char[] ch,int i, int j){
+        char temp=ch[i];
+        ch[i]=ch[j];
+        ch[j]=temp;
+    }
+    public void reverseString(char[] s) {
+        if(s.length == 1) {
+            return;
+        }
+        int l = 0, r = s.length - 1;
+        while(l < r) {
+            char tmp = s[r];
+            s[r] = s[l];
+            s[l] = tmp;
+            l++;
+            r--;
+        }
+    }
+    public boolean isFlipedString(String s1, String s2) {
+        return s1.length() == s2.length() && (s1 + s1).contains(s2);
+    }
     public List<List<Integer>> fourSum(int[] nums, int target) {
         List<List<Integer>> res = new ArrayList<>();
         if(nums == null || nums.length <= 3) {
