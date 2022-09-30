@@ -1,6 +1,7 @@
 import trees.TreeNode;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Solution {
@@ -29,6 +30,189 @@ public class Solution {
         // new Solution().longestSubarray(new int[] {1,2,3,3,2,2});
       //  new Solution().goodIndices(new int[] {2,1,1,1,3,4,1}, 2);
         new Solution().isSubsequence("acb", "ahbgdc");
+    }
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while (true) {
+            if(fast == null || fast.next == null) {
+                return null;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+            if(slow == fast) {
+                break;
+            }
+        }
+        fast = head;
+        while(slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return fast;
+    }
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode res = new ListNode(-1);
+        res.next = head;
+        ListNode slow = head;
+        ListNode fast = head;
+        while (n > 0) {
+            fast = fast.next;
+            n--;
+        }
+        ListNode pre = res;
+        while (fast != null) {
+            pre = slow;
+            slow = slow.next;
+            fast = fast.next;
+        }
+        pre.next = slow.next;
+        return res.next;
+    }
+    public ListNode middleNode(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while(slow != null && fast != null) {
+            if(fast.next != null) {
+                fast = fast.next.next;
+            } else {
+                break;
+            }
+            slow = slow.next;
+        }
+        return slow;
+    }
+    public int coinChange(int[] coins, int amount) {
+        int max = amount + 1;
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, max);
+        dp[0] = 0;
+        for (int i = 1; i <= amount ; i++) {
+            for (int j = 0; j < coins.length; j++) {
+                if(coins[j] <= i) {
+                    dp[i] = Math.min(dp[i], dp[i - coins[j]] +1);
+                }
+            }
+        }
+        return dp[amount] == max ? -1 :dp[amount];
+    }
+    public boolean canPartition(int[] nums) {
+        int n = nums.length;
+        int sum = 0;
+        int max = 0;
+        for (int k : nums) {
+            sum += k;
+            if (max < k) {
+                max = k;
+            }
+        }
+        if(sum %2!=0) {
+            return false;
+        }
+        int target = sum /2;
+        if(max > target) {
+            return false;
+        }
+        boolean[][] dp = new boolean[n][target+1];
+        dp[0][nums[0]] = true;
+        for (int i = 0; i < n; i++) {
+            dp[i][0] = true;
+        }
+        for (int i = 1; i < n; i++) {
+            int num = nums[i];
+            for (int j = 0; j <= target; j++) {
+                if(j >= num) {
+                    dp[i][j] = dp[i-1][j] | dp[i-1][j-num];
+                } else {
+                    dp[i][j] = dp[i-1][j];
+                }
+            }
+        }
+        return dp[n-1][target];
+    }
+    public int maxSubArray(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+        dp[0] = nums[0];
+        int max = dp[0];
+        for (int i = 1; i < nums.length; i++) {
+            dp[i] = Math.max(dp[i-1] + nums[i], nums[i]);
+            if(dp[i]> max) {
+                max = dp[i];
+            }
+        }
+        return max;
+    }
+    public void setZeroes(int[][] matrix) {
+        if(matrix==null || matrix.length == 0) {
+            return;
+        }
+        boolean[] row = new boolean[matrix.length];
+        boolean[] col = new boolean[matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if(matrix[i][j] == 0) {
+                    row[i] = true;
+                    col[j] = true;
+                }
+            }
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if(row[i] || col[j]) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+    }
+/*//(1,1):代表第一次进入递归函数，并且从第一个口进入，并且记录进入前链表的状态
+    merge(1,1): 1->4->5->null, 1->2->3->6->null
+    merge(2,2): 4->5->null, 1->2->3->6->null
+    merge(3,2): 4->5->null, 2->3->6->null
+    merge(4,2): 4->5->null, 3->6->null
+    merge(5,1): 4->5->null, 6->null
+    merge(6,1): 5->null, 6->null
+    merge(7): null, 6->null
+            return l2
+    l1.next --- 5->6->null, return l1
+    l1.next --- 4->5->6->null, return l1
+    l2.next --- 3->4->5->6->null, return l2
+    l2.next --- 2->3->4->5->6->null, return l2
+    l2.next --- 1->2->3->4->5->6->null, return l2
+    l1.next --- 1->1->2->3->4->5->6->null, return l1
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null) {
+            return l2;
+        }
+        else if (l2 == null) {
+            return l1;
+        }
+        else if (l1.val < l2.val) {
+            l1.next = mergeTwoLists(l1.next, l2);
+            return l1;
+        }
+        else {
+            l2.next = mergeTwoLists(l1, l2.next);
+            return l2;
+        }
+    }
+*/
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode prehead = new ListNode(-1);
+
+        ListNode prev = prehead;
+        while(list1 != null && list2 != null) {
+            if(list1.val <= list2.val) {
+                prev.next = list1;
+                list1 = list1.next;
+            } else {
+                prev.next = list2;
+                list2 = list2.next;
+            }
+            prev = prev.next;
+        }
+        prev.next = list1 == null ? list2 : list1;
+        return prehead.next;
     }
     public String reverseWords(String s) {
         char[] ch=s.toCharArray();
