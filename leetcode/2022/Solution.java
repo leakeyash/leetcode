@@ -36,6 +36,46 @@ public class Solution {
         //new Solution().minimizeXor(65,84);
         new Solution().deleteString("aaaaa");
     }
+    public int[][] floodFill(int[][] image, int sr, int sc, int color) {
+        int[] dx = {1, 0, 0, -1};
+        int[] dy = {0, 1, -1, 0};
+        int currColor = image[sr][sc];
+        if(currColor == color) {
+            return image;
+        }
+        int r = image.length, c = image[0].length;
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[] {sr,sc});
+        image[sr][sc] = color;
+        while (!queue.isEmpty()) {
+            int[] cell = queue.poll();
+            int x= cell[0], y = cell[1];
+            for (int i = 0; i < 4; i++) {
+                int mx = x + dx[i], my = y + dy[i];
+                if(mx>=0 && mx < r&& my >=0 && my < c && image[mx][my] == currColor) {
+                    queue.offer(new int[]{mx, my});
+                    image[mx][my] = color;
+                }
+            }
+        }
+        return image;
+    }
+    public int minAddToMakeValid(String s) {
+        Deque<Character> deque = new LinkedList<>();
+        for (char ch: s.toCharArray()) {
+            if(ch == '(') {
+                deque.push(ch);
+            } else {
+                Character peek = deque.peek();
+                if(peek!=null && peek == '(') {
+                    deque.pop();
+                } else {
+                    deque.push(peek);
+                }
+            }
+        }
+        return deque.size();
+    }
     public boolean checkOnesSegment(String s) {
         boolean flag = true;
         for (int i = 1; i < s.length(); i++) {
