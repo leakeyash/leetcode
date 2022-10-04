@@ -36,6 +36,74 @@ public class Solution {
         //new Solution().minimizeXor(65,84);
         new Solution().deleteString("aaaaa");
     }
+    public List<String> subdomainVisits(String[] cpdomains) {
+        Map<String, Integer> map = new HashMap<>();
+        for (String s : cpdomains) {
+            String[] split = s.split(" ");
+            int count = Integer.parseInt(split[0]);
+            String domains = split[1];
+            map.put(domains, map.getOrDefault(domains, 0) + count);
+            for (int i = 0; i < domains.length(); i++) {
+                if(domains.charAt(i) == '.') {
+                    map.put(domains.substring(i+1), map.getOrDefault(domains.substring(i+1), 0) + count);
+                }
+            }
+        }
+        return map.entrySet().stream().map(x->x.getValue() + " " +x.getKey()).collect(Collectors.toList());
+    }
+    public int maxAreaOfIslandDFS(int[][] grid) {
+        int max = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if(grid[i][j] == 1){
+                    max = Math.max(max, dfsMaxAreaOfIsland(grid, 0,i,j));
+                }
+            }
+        }
+        return max;
+    }
+
+    private int dfsMaxAreaOfIsland(int[][] grid, int size, int i, int j) {
+        if(i<0||i>=grid.length || j<0|| j>=grid[0].length || grid[i][j]!=1) {
+            return size;
+        } else {
+            grid[i][j] = 0;
+            size++;
+            size = dfsMaxAreaOfIsland(grid, size, i+1, j);
+            size = dfsMaxAreaOfIsland(grid, size, i, j+1);
+            size = dfsMaxAreaOfIsland(grid, size, i-1, j);
+            size = dfsMaxAreaOfIsland(grid, size, i, j-1);
+            return size;
+        }
+    }
+    public int maxAreaOfIsland(int[][] grid) {
+        int[] dx = {1, 0, 0, -1};
+        int[] dy = {0, 1, -1, 0};
+        int ans = 0;
+        int r = grid.length, c = grid[0].length;
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                int cur = 0;
+                Queue<int[]> queue = new LinkedList<>();
+                queue.offer(new int[]{i,j});
+                while (!queue.isEmpty()) {
+                    int[] poll = queue.poll();
+                    int x = poll[0], y = poll[1];
+                    if(x < 0 || x >= r || y < 0 || y >=c || grid[x][y] != 1) {
+                        continue;
+                    }
+                    cur++;
+                    grid[x][y] = 0;
+                    for (int k = 0; k < 4; k++) {
+                        int mx = x + dx[k], my = y + dy[k];
+                        queue.offer(new int[]{mx, my});
+                    }
+                }
+                ans = Math.max(cur, ans);
+            }
+        }
+        return ans;
+    }
     public int[][] floodFill(int[][] image, int sr, int sc, int color) {
         int[] dx = {1, 0, 0, -1};
         int[] dy = {0, 1, -1, 0};
