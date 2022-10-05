@@ -1,4 +1,5 @@
 import linkedlist.ListNode;
+import org.w3c.dom.Node;
 import trees.TreeNode;
 
 import java.util.*;
@@ -7,7 +8,25 @@ import java.util.stream.IntStream;
 
 
 public class Solution {
+    class Node {
+        public int val;
+        public Node left;
+        public Node right;
+        public Node next;
 
+        public Node() {}
+
+        public Node(int _val) {
+            val = _val;
+        }
+
+        public Node(int _val, Node _left, Node _right, Node _next) {
+            val = _val;
+            left = _left;
+            right = _right;
+            next = _next;
+        }
+    };
 
     public static void main(String[] args) {
         int[] a = new int[2];
@@ -31,11 +50,62 @@ public class Solution {
         // new Solution().transportationHub(new int[][]{{0,3},{1,0},{1,3},{2,0},{3,0},{3,2}});
         // new Solution().longestSubarray(new int[] {1,2,3,3,2,2});
         //  new Solution().goodIndices(new int[] {2,1,1,1,3,4,1}, 2);
-      //  new Solution().isSubsequence("acb", "ahbgdc");
+        //  new Solution().isSubsequence("acb", "ahbgdc");
         //new Solution().equalFrequency("bac");
         //new Solution().minimizeXor(65,84);
         new Solution().deleteString("aaaaa");
     }
+    public Node connect(Node root) {
+        if(root == null) {
+            return null;
+        }
+        if(root.left == null) {
+            return root;
+        }
+        root.left.next = root.right;
+        if(root.next != null) {
+            root.right.next = root.next.left;
+        }
+        connect(root.left);
+        connect(root.right);
+        return root;
+    }
+    public Node connectBFS(Node root) {
+        if(root == null) {
+            return null;
+        }
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+        while(!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Node node = queue.poll();
+                if(i<size-1) {
+                    node.next= queue.peek();
+                }
+                if(node.left!=null){
+                    queue.offer(node.left);
+                }
+                if(node.right!=null){
+                    queue.offer(node.right);
+                }
+            }
+        }
+        return root;
+    }
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        if (root1==null) {
+            return root2;
+        }
+        if(root2 == null) {
+            return root1;
+        }
+        TreeNode res = new TreeNode(root1.val + root2.val);
+        res.left = mergeTrees(root1.left, root2.left);
+        res.right = mergeTrees(root1.right, root2.right);
+        return res;
+    }
+
     public List<String> subdomainVisits(String[] cpdomains) {
         Map<String, Integer> map = new HashMap<>();
         for (String s : cpdomains) {
@@ -44,19 +114,20 @@ public class Solution {
             String domains = split[1];
             map.put(domains, map.getOrDefault(domains, 0) + count);
             for (int i = 0; i < domains.length(); i++) {
-                if(domains.charAt(i) == '.') {
-                    map.put(domains.substring(i+1), map.getOrDefault(domains.substring(i+1), 0) + count);
+                if (domains.charAt(i) == '.') {
+                    map.put(domains.substring(i + 1), map.getOrDefault(domains.substring(i + 1), 0) + count);
                 }
             }
         }
-        return map.entrySet().stream().map(x->x.getValue() + " " +x.getKey()).collect(Collectors.toList());
+        return map.entrySet().stream().map(x -> x.getValue() + " " + x.getKey()).collect(Collectors.toList());
     }
+
     public int maxAreaOfIslandDFS(int[][] grid) {
         int max = 0;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
-                if(grid[i][j] == 1){
-                    max = Math.max(max, dfsMaxAreaOfIsland(grid, 0,i,j));
+                if (grid[i][j] == 1) {
+                    max = Math.max(max, dfsMaxAreaOfIsland(grid, 0, i, j));
                 }
             }
         }
@@ -64,18 +135,19 @@ public class Solution {
     }
 
     private int dfsMaxAreaOfIsland(int[][] grid, int size, int i, int j) {
-        if(i<0||i>=grid.length || j<0|| j>=grid[0].length || grid[i][j]!=1) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length || grid[i][j] != 1) {
             return size;
         } else {
             grid[i][j] = 0;
             size++;
-            size = dfsMaxAreaOfIsland(grid, size, i+1, j);
-            size = dfsMaxAreaOfIsland(grid, size, i, j+1);
-            size = dfsMaxAreaOfIsland(grid, size, i-1, j);
-            size = dfsMaxAreaOfIsland(grid, size, i, j-1);
+            size = dfsMaxAreaOfIsland(grid, size, i + 1, j);
+            size = dfsMaxAreaOfIsland(grid, size, i, j + 1);
+            size = dfsMaxAreaOfIsland(grid, size, i - 1, j);
+            size = dfsMaxAreaOfIsland(grid, size, i, j - 1);
             return size;
         }
     }
+
     public int maxAreaOfIsland(int[][] grid) {
         int[] dx = {1, 0, 0, -1};
         int[] dy = {0, 1, -1, 0};
@@ -85,11 +157,11 @@ public class Solution {
             for (int j = 0; j < c; j++) {
                 int cur = 0;
                 Queue<int[]> queue = new LinkedList<>();
-                queue.offer(new int[]{i,j});
+                queue.offer(new int[]{i, j});
                 while (!queue.isEmpty()) {
                     int[] poll = queue.poll();
                     int x = poll[0], y = poll[1];
-                    if(x < 0 || x >= r || y < 0 || y >=c || grid[x][y] != 1) {
+                    if (x < 0 || x >= r || y < 0 || y >= c || grid[x][y] != 1) {
                         continue;
                     }
                     cur++;
@@ -104,23 +176,24 @@ public class Solution {
         }
         return ans;
     }
+
     public int[][] floodFill(int[][] image, int sr, int sc, int color) {
         int[] dx = {1, 0, 0, -1};
         int[] dy = {0, 1, -1, 0};
         int currColor = image[sr][sc];
-        if(currColor == color) {
+        if (currColor == color) {
             return image;
         }
         int r = image.length, c = image[0].length;
         Queue<int[]> queue = new LinkedList<>();
-        queue.offer(new int[] {sr,sc});
+        queue.offer(new int[]{sr, sc});
         image[sr][sc] = color;
         while (!queue.isEmpty()) {
             int[] cell = queue.poll();
-            int x= cell[0], y = cell[1];
+            int x = cell[0], y = cell[1];
             for (int i = 0; i < 4; i++) {
                 int mx = x + dx[i], my = y + dy[i];
-                if(mx>=0 && mx < r&& my >=0 && my < c && image[mx][my] == currColor) {
+                if (mx >= 0 && mx < r && my >= 0 && my < c && image[mx][my] == currColor) {
                     queue.offer(new int[]{mx, my});
                     image[mx][my] = color;
                 }
@@ -128,14 +201,15 @@ public class Solution {
         }
         return image;
     }
+
     public int minAddToMakeValid(String s) {
         Deque<Character> deque = new LinkedList<>();
-        for (char ch: s.toCharArray()) {
-            if(ch == '(') {
+        for (char ch : s.toCharArray()) {
+            if (ch == '(') {
                 deque.push(ch);
             } else {
                 Character peek = deque.peek();
-                if(peek!=null && peek == '(') {
+                if (peek != null && peek == '(') {
                     deque.pop();
                 } else {
                     deque.push(peek);
@@ -144,129 +218,137 @@ public class Solution {
         }
         return deque.size();
     }
+
     public boolean checkOnesSegment(String s) {
         boolean flag = true;
         for (int i = 1; i < s.length(); i++) {
-            if(s.charAt(i) == '1' ) {
-               if(!flag) {
-                   return false;
-               }
+            if (s.charAt(i) == '1') {
+                if (!flag) {
+                    return false;
+                }
             } else {
                 flag = false;
             }
         }
         return true;
     }
+
     public int deleteString(String s) {
         //TODO: Wrong answer
-        if(s.length() == 1) {
+        if (s.length() == 1) {
             return 1;
         }
         int count = 0;
         StringBuilder sb = new StringBuilder(s);
         int i;
-        for ( i = 1; i <= sb.length()/2;i++ ) {
-            int left = i-1;
+        for (i = 1; i <= sb.length() / 2; i++) {
+            int left = i - 1;
             int right = i;
             StringBuilder sl = new StringBuilder();
             StringBuilder sr = new StringBuilder();
-            while(left>=0 && right < sb.length()) {
-                sl.insert(0,sb.charAt(left));
+            while (left >= 0 && right < sb.length()) {
+                sl.insert(0, sb.charAt(left));
                 sr.append(sb.charAt(right));
-                if(sl.toString().equals(sr.toString())) {
+                if (sl.toString().equals(sr.toString())) {
                     sb.delete(left, i);
                     count++;
-                    i=0;
+                    i = 0;
                     break;
                 }
                 left--;
                 right++;
             }
         }
-        return sb.isEmpty() ? count : count +1;
-     }
+        return sb.isEmpty() ? count : count + 1;
+    }
+
     public int minimizeXor(int num1, int num2) {
         char[] s1 = Integer.toBinaryString(num1).toCharArray();
         String s2 = Integer.toBinaryString(num2);
-        int count2=0;
-        for(char ch: s2.toCharArray()) {
-            if(ch=='1') {
+        int count2 = 0;
+        for (char ch : s2.toCharArray()) {
+            if (ch == '1') {
                 count2++;
             }
         }
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < s1.length; i++) {
-            if(s1[i] == '1' && count2>0) {
+            if (s1[i] == '1' && count2 > 0) {
                 count2--;
                 res.append("1");
             } else {
                 res.append("0");
             }
         }
-        for (int i = s1.length-1; i >=0 ; i--) {
-            if(s1[i] == '0' && count2 >0){
+        for (int i = s1.length - 1; i >= 0; i--) {
+            if (s1[i] == '0' && count2 > 0) {
                 count2--;
-                res.insert(i,"1");
-                res.deleteCharAt(i+1);
+                res.insert(i, "1");
+                res.deleteCharAt(i + 1);
             }
         }
-        while (count2>0) {
+        while (count2 > 0) {
             res.insert(0, "1");
-                count2--;
+            count2--;
         }
         return Integer.parseInt(res.toString(), 2);
     }
+
     public int maxSum(int[][] grid) {
         int max = 0;
-        for (int i = 0; i < grid.length-2; i++) {
-            for (int j = 0; j < grid[0].length-2; j++) {
-                int sum = grid[i][j] + grid[i][j+1] + grid[i][j+2]
-                        + grid[i+1][j+1]
-                        + grid[i+2][j] + grid[i+2][j+1] + grid[i+2][j+2];
-                if(sum>max) {
+        for (int i = 0; i < grid.length - 2; i++) {
+            for (int j = 0; j < grid[0].length - 2; j++) {
+                int sum = grid[i][j] + grid[i][j + 1] + grid[i][j + 2]
+                        + grid[i + 1][j + 1]
+                        + grid[i + 2][j] + grid[i + 2][j + 1] + grid[i + 2][j + 2];
+                if (sum > max) {
                     max = sum;
                 }
             }
         }
         return max;
     }
+
     public int commonFactors(int a, int b) {
-        int min = Math.min(a,b);
-        int count =0;
+        int min = Math.min(a, b);
+        int count = 0;
         for (int i = 1; i <= min; i++) {
-            if(a % i ==0 && b%i ==0) {
+            if (a % i == 0 && b % i == 0) {
                 count++;
             }
         }
         return count;
     }
+
     public int xorAllNums(int[] nums1, int[] nums2) {
-        int n1=nums1.length,n2=nums2.length;
-        int ans=0;
-        for(int a:nums1) {
-            if((n2&1) == 1) {
-                ans^=a;
+        int n1 = nums1.length, n2 = nums2.length;
+        int ans = 0;
+        for (int a : nums1) {
+            if ((n2 & 1) == 1) {
+                ans ^= a;
             }
         }
-        for(int a:nums2) {
-            if((n1&1) == 1) {
-                ans^=a;
+        for (int a : nums2) {
+            if ((n1 & 1) == 1) {
+                ans ^= a;
             }
         }
         return ans;
     }
+
     class LUPrefix {
         boolean[] cache;
         int lastIndex = -1;
+
         public LUPrefix(int n) {
             cache = new boolean[n];
         }
 
         public void upload(int video) {
-            cache[video-1] = true;
+            cache[video - 1] = true;
             int i = Math.max(lastIndex, 0);
             for (; i < cache.length; i++) {
-                if(!cache[i]) {
+                if (!cache[i]) {
                     break;
                 }
             }
@@ -277,29 +359,30 @@ public class Solution {
             return lastIndex + 1;
         }
     }
+
     public boolean equalFrequency(String word) {
         int[] cache = new int[26];
-        for (char ch: word.toCharArray()) {
+        for (char ch : word.toCharArray()) {
             cache[ch - 'a']++;
         }
         for (char ch : word.toCharArray()) {
-            cache[ch-'a']--;
+            cache[ch - 'a']--;
             boolean test = true;
             int pre = -1;
             for (int i = 0; i < cache.length; i++) {
-                if(cache[i] != 0) {
-                    if(pre == -1) {
-                        pre= cache[i];
+                if (cache[i] != 0) {
+                    if (pre == -1) {
+                        pre = cache[i];
                     }
-                    if(cache[i]!=pre) {
+                    if (cache[i] != pre) {
                         test = false;
                     }
                 }
             }
-            if(test) {
+            if (test) {
                 return true;
             }
-            cache[ch-'a']++;
+            cache[ch - 'a']++;
         }
         return false;
     }
@@ -322,9 +405,10 @@ public class Solution {
         }
         return ans;
     }
+
     public boolean checkInclusion(String s1, String s2) {
         int n = s1.length(), m = s2.length();
-        if(n>m) {
+        if (n > m) {
             return false;
         }
         int[] cache = new int[26];
@@ -333,35 +417,35 @@ public class Solution {
             cache[s2.charAt(i) - 'a']++;
         }
         int diff = 0;
-        for(int i : cache) {
-            if(i!=0) {
-                diff ++;
+        for (int i : cache) {
+            if (i != 0) {
+                diff++;
             }
         }
-        if(diff == 0) {
+        if (diff == 0) {
             return true;
         }
-        for(int i = n; i< m;i++) {
-            int out = s2.charAt(i-n) - 'a';
+        for (int i = n; i < m; i++) {
+            int out = s2.charAt(i - n) - 'a';
             int in = s2.charAt(i) - 'a';
-            if(out == in) {
+            if (out == in) {
                 continue;
             }
-            if(cache[in] == 0) {
+            if (cache[in] == 0) {
                 diff++;
             }
             cache[in]++;
-            if(cache[in] == 0) {
+            if (cache[in] == 0) {
                 diff--;
             }
-            if(cache[out] == 0) {
+            if (cache[out] == 0) {
                 diff++;
             }
             cache[out]--;
-            if(cache[out] == 0) {
+            if (cache[out] == 0) {
                 diff--;
             }
-            if(diff == 0){
+            if (diff == 0) {
                 return true;
             }
         }
