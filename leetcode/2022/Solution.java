@@ -55,6 +55,28 @@ public class Solution {
         //new Solution().minimizeXor(65,84);
         new Solution().deleteString("aaaaa");
     }
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        boolean[] visited = new boolean[nums.length];
+        doPermute(nums, new ArrayList<>(),0,res, visited);
+        return res;
+    }
+
+    private void doPermute(int[] nums, List<Integer> path, int depth, List<List<Integer>> res, boolean[] visited) {
+        if(depth == nums.length) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if(!visited[i]) {
+                path.add(nums[i]);
+                visited[i] = true;
+                doPermute(nums, path, depth+1, res, visited);
+                path.remove(path.size()-1);
+                visited[i]= false;
+            }
+        }
+    }
     public Node connect(Node root) {
         if(root == null) {
             return null;
