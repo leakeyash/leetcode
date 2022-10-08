@@ -29,32 +29,106 @@ public class Solution {
     };
 
     public static void main(String[] args) {
-        int[] a = new int[2];
-        System.out.println(++a[0]);
-        //new Solution().findMedianSortedArrays(new int[] {1,3}, new int[] {2,4});
-        //System.out.println(new Solution().canBeTypedWords("leet code", "lt"));
-        // System.out.println(new Solution().reformat("ab123"));
-        // new Solution().garbageCollection(new String[] {"G","P","GP","GG"}, new int[] {2,4,3});
-        // new Solution().checkDistances("aa", new int[]{
-        //         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0});
-        // new Solution().longestNiceSubarray(new int[]{3,1,5,11,13});
-
-        // new Solution().countDaysTogether("08-15",
-        //         "08-18",
-        //         "08-16",
-        //         "08-19");
-        // new Solution().longestContinuousSubstring("abcabe");
-        //new Solution().reverseOddLevels(TreeNodeFactory.newBinaryTree(2,3,5,8,13,21,34));
-
-        // new Solution().maxProfitCoolDown(new int[] {1,2,3,0,2});
-        // new Solution().transportationHub(new int[][]{{0,3},{1,0},{1,3},{2,0},{3,0},{3,2}});
-        // new Solution().longestSubarray(new int[] {1,2,3,3,2,2});
-        //  new Solution().goodIndices(new int[] {2,1,1,1,3,4,1}, 2);
-        //  new Solution().isSubsequence("acb", "ahbgdc");
-        //new Solution().equalFrequency("bac");
-        //new Solution().minimizeXor(65,84);
-        new Solution().deleteString("aaaaa");
+        System.out.println(Integer.toBinaryString(Integer.MAX_VALUE));
     }
+    public boolean find132patternStack(int[] nums) {
+        if(nums.length<3){
+            return false;
+        }
+        Deque<Integer> deque = new LinkedList<>();
+        deque.push(nums[nums.length-1]);
+        int max2 = Integer.MIN_VALUE;
+        for (int i = nums.length-2; i >=0 ; i--) {
+            if(nums[i] < max2) {
+                return true;
+            }
+            while(!deque.isEmpty() && nums[i] > deque.peek()) {
+                max2 = deque.pop();
+            }
+            deque.push(nums[i]);
+        }
+        return false;
+    }
+    public boolean find132pattern(int[] nums) {
+        if(nums.length<3){
+            return false;
+        }
+        int left = nums[0];
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        for (int i = 2; i < nums.length; i++) {
+            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+        }
+        for (int i = 1; i < nums.length - 1; i++) {
+            if(nums[i]>left) {
+                Integer ceilingKey = map.ceilingKey(left + 1);
+                if(ceilingKey!= null && ceilingKey < nums[i]) {
+                    return true;
+                }
+            }
+            left = Math.min(left, nums[i]);
+            map.put(nums[i+1], map.get(nums[i+1]) - 1);
+            if(map.get(nums[i+1]) == 0) {
+                map.remove(nums[i+1]);
+            }
+        }
+        return false;
+    }
+    public int hammingWeight(int n) {
+        int cnt = 0;
+        while (n!=0) {
+            cnt++;
+            n = n&(n-1);
+        }
+        return cnt;
+    }
+    public boolean isPowerOfTwo(int n) {
+        if(n <= 0) {
+            return false;
+        }
+        return (n & (n-1)) == 0;
+    }
+    public int minMeetingRoomsPointers(int[][] intervals) {
+        if(intervals.length == 1){
+            return 1;
+        }
+        int[] starts = new int[intervals.length];
+        int[] ends = new int[intervals.length];
+        for (int i = 0; i < intervals.length; i++) {
+            starts[i] = intervals[i][0];
+            ends[i] = intervals[i][1];
+        }
+        Arrays.sort(starts);
+        Arrays.sort(ends);
+        int startIndex = 0, endIndex = 0, max = 0, cur = 0;
+        while (startIndex<intervals.length&&endIndex<intervals.length) {
+            if(starts[startIndex] < ends[endIndex]) {
+                cur ++;
+                startIndex ++;
+                max = Math.max(cur, max);
+            } else {
+                cur --;
+                endIndex ++;
+            }
+        }
+        return max;
+    }
+    public int minMeetingRooms(int[][] intervals) {
+        if(intervals.length == 1){
+            return 1;
+        }
+        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));
+        PriorityQueue<Integer> endQueue = new PriorityQueue<>();
+        endQueue.offer(intervals[0][1]);
+        for (int i = 1; i < intervals.length; i++) {
+            Integer peek = endQueue.peek();
+            if(peek!=null && intervals[i][0] >= peek) {
+                endQueue.poll();
+            }
+            endQueue.offer(intervals[i][1]);
+        }
+        return endQueue.size();
+    }
+
     public List<List<Integer>> permute(int[] nums) {
         List<List<Integer>> res = new ArrayList<>();
         boolean[] visited = new boolean[nums.length];
