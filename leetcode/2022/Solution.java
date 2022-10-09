@@ -30,6 +30,91 @@ public class Solution {
 
     public static void main(String[] args) {
         System.out.println(Integer.toBinaryString(Integer.MAX_VALUE));
+        new Solution().robotWithString("bac");
+    }
+    public String robotWithString(String s) {
+        Deque<Character> deque = new LinkedList<>();
+        StringBuilder sb = new StringBuilder();
+        doRobotWithString(s.toCharArray(), 0, sb, deque);
+        return sb.toString();
+    }
+    private void doRobotWithString(char[] chars, int startIndex, StringBuilder sb, Deque<Character> deque) {
+        if(sb.length() == chars.length) {
+            return;
+        }
+        if(startIndex >= chars.length) {
+            while (!deque.isEmpty()) {
+                sb.append(deque.pop());
+            }
+            return;
+        }
+        int minIndex = startIndex;
+        char min = chars[startIndex];
+        for (int i = startIndex; i < chars.length; i++) {
+            if(chars[i] < min) {
+                min = chars[i];
+                minIndex = i;
+            }
+        }
+        while(!deque.isEmpty() && min >= deque.peek()) {
+           sb.append(deque.pop());
+        }
+        sb.append(min);
+
+        for (int i = startIndex; i < minIndex; i++) {
+            deque.push(chars[i]);
+        }
+        doRobotWithString(chars, minIndex+1,sb, deque);
+    }
+    public int[] findArray(int[] pref) {
+        int[] res = new int[pref.length];
+        res[0]= pref[0];
+        for (int i = 1; i < pref.length; i++) {
+            res[i] = pref[i] ^ pref[i-1];
+        }
+        return res;
+    }
+    public int hardestWorker(int n, int[][] logs) {
+        int start = 0;
+        int max = 0;
+        int id = n;
+        for (int i = 0; i < logs.length; i++) {
+            int cur = logs[i][1] - start;
+            if(cur>max) {
+                max = cur;
+                id = logs[i][0];
+            } else if(cur == max) {
+                id = Math.min(id, logs[i][0]);
+            }
+            start = logs[i][1];
+        }
+        return id;
+    }
+    public List<Integer> getRow(int rowIndex) {
+        if(rowIndex == 0) {
+            return List.of(1);
+        }
+        List<Integer> res = new ArrayList<>();
+        res.add(1);
+        for (int i = 1; i <= rowIndex; i++) {
+            res.add(Long.valueOf((long)res.get(i-1) * (rowIndex-i+1)/i).intValue());
+        }
+        return res;
+    }
+    public int singleNumber(int[] nums) {
+        int res = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            res ^= nums[i];
+        }
+        return res;
+    }
+    public int reverseBits(int n) {
+        int res = 0;
+        for (int i = 1; i <= 32; i++) {
+            res = (res << 1) | (n&1);
+            n >>>=1;
+        }
+        return res;
     }
     public boolean find132patternStack(int[] nums) {
         if(nums.length<3){
