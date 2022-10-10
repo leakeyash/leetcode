@@ -30,8 +30,370 @@ public class Solution {
 
     public static void main(String[] args) {
         System.out.println(Integer.toBinaryString(Integer.MAX_VALUE));
-        new Solution().robotWithString("bac");
+        new Solution().searchMatrix(new int[][]{new int[]{1}}, 1);
     }
+    public List<String> topKFrequent(String[] words, int k) {
+        Map<String, Integer> treeMap = new HashMap<>();
+        for (int i = 0; i < words.length; i++) {
+            treeMap.put(words[i], treeMap.getOrDefault(words[i], 0) +1);
+        }
+        List<Map.Entry<String, Integer>> entries = new ArrayList<>(treeMap.entrySet());
+        entries.sort((a, b) -> {
+            if(Objects.equals(b.getValue(), a.getValue())) {
+                return a.getKey().compareTo(b .getKey());
+            }
+            return b.getValue() - a.getValue();
+        });
+        return entries.subList(0,k).stream().map(Map.Entry::getKey).collect(Collectors.toList());
+    }
+    public int lastStoneWeight(int[] stones) {
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>((a,b) -> b-a);
+        for(int i: stones) {
+            priorityQueue.offer(i);
+        }
+        while (priorityQueue.size()>1) {
+            Integer p1 = priorityQueue.poll();
+            Integer p2 = priorityQueue.poll();
+            int n = Math.abs(p1-p2);
+            if(n!=0) {
+                priorityQueue.offer(n);
+            }
+        }
+        if(priorityQueue.size() == 0) {
+            return 0;
+        }
+        return priorityQueue.poll();
+    }
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[] firstCols = new int[m];
+        for (int i = 0; i < m; i++) {
+            firstCols[i] = matrix[i][0];
+        }
+        int l = 0, r = m;
+        int rowNum = -1;
+        while (l < r) {
+            int mid = (r+l)>>>1;
+            if(firstCols[mid] == target) {
+                rowNum = mid;
+                break;
+            }
+            if(firstCols[mid] > target) {
+                r = mid ;
+            } else {
+                l = mid + 1;
+            }
+        }
+        if(rowNum == -1 && l == 0) {
+            return false;
+        }
+        rowNum = rowNum == -1? l - 1: rowNum;
+        int[] row = matrix[rowNum];
+         l = 0;
+         r = n-1;
+         while (l <= r) {
+             int mid = (r+l)>>>1;
+             if(row[mid] == target) {
+                 return true;
+             }
+             if(row[mid] > target) {
+                 r = mid - 1 ;
+             } else {
+                 l = mid + 1;
+             }
+         }
+        return false;
+    }
+    public int search33(int[] nums, int target) {
+        int n = nums.length;
+        int l = 0, r = nums.length ;
+        while (l < r) {
+            int mid=(r+l)>>>1;
+            if(nums[mid] == target) {
+                return mid;
+            }
+            if(nums[mid] >= nums[0]) {
+                if(nums[mid] > target && target >= nums[0]) {
+                    r = mid - 1;
+                } else {
+                    l = mid + 1;
+                }
+            } else {
+                if(nums[mid] < target && target <= nums[n-1]) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                }
+            }
+        }
+        return l < n && nums[l] == target ? l : -1;
+    }
+    public int[] searchRange(int[] nums, int target) {
+        int l=binarySearchRange(nums,target);
+        int r=binarySearchRange(nums,target+1);
+        if(l==nums.length||nums[l]!=target) {
+            return new int[]{-1,-1};
+        }
+        return new int[]{l,r-1};
+    }
+    private int binarySearchRange(int[] nums,int target){
+        int l=0,r=nums.length;
+        while(l<r){
+            int mid=(r+l)>>>1;
+            if(nums[mid]>=target) {
+                r=mid;
+            } else {
+                l=mid+1;
+            }
+        }
+        return l;
+    }
+    public String decodeString(String s) {
+        Deque<Integer> integerStack = new ArrayDeque<>();
+        Deque<StringBuilder> stringStack = new ArrayDeque<>();
+        StringBuilder sb = new StringBuilder();
+        int number = 0;
+        for(char c: s.toCharArray()) {
+            if(c == '[') {
+                integerStack.push(number);
+                stringStack.push(sb);
+                number = 0;
+                sb = new StringBuilder();
+            } else if (c == ']') {
+                StringBuilder tmp = stringStack.pop();
+                int count = integerStack.pop();
+                for(int i = 0; i < count; i++) {
+                    tmp.append(sb);
+                }
+                sb = tmp;
+            } else if (c >= '0' && c <= '9') {
+                number = number * 10 + c - '0';
+            } else {
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
+    }
+    public boolean backspaceCompare(String s, String t) {
+        Deque<Character> dequeS = new LinkedList<>();
+        Deque<Character> dequeT = new LinkedList<>();
+        for (int i = 0; i < s.length(); i++) {
+            if(s.charAt(i) == '#') {
+                if(!dequeS.isEmpty()) {
+                    dequeS.pop();
+                }
+            } else {
+                dequeS.push(s.charAt(i));
+            }
+        }
+        for (int i = 0; i < t.length(); i++) {
+            if(t.charAt(i) == '#') {
+                if(!dequeT.isEmpty()) {
+                    dequeT.pop();
+                }
+            } else {
+                dequeT.push(t.charAt(i));
+            }
+        }
+        if(dequeS.size() != dequeT.size()) {
+            return false;
+        }
+        while(!dequeS.isEmpty()) {
+            if(!dequeS.pop().equals(dequeT.pop())) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public String getHint(String secret, String guess) {
+        int countA = 0;
+        int[] countS = new int[10];
+        int[] countG = new int[10];
+        for (int i = 0; i < secret.length(); i++) {
+            if(secret.charAt(i) == guess.charAt(i)) {
+                countA++;
+            } else {
+                countS[secret.charAt(i)-'0']++;
+                countG[guess.charAt(i)-'0']++;
+            }
+        }
+        int countB = 0;
+        for (int i = 0; i < 10; i++) {
+            countB+=Math.min(countS[i], countG[i]);
+        }
+        return countA+"A"+countB+"B";
+    }
+    public int characterReplacement1(String s, int k) {
+        int len = s.length();
+        if(len < 2) {
+            return len;
+        }
+        char[] chars = s.toCharArray();
+        int left = 0;
+        int right = 0;
+        int res = 0, maxCount = 0;
+        int[] freq = new int[26];
+        while (right<len) {
+            freq[chars[right] - 'A']++;
+            maxCount = Math.max(maxCount, freq[chars[right] - 'A']);
+            right++;
+            if(right-left>maxCount+k) {
+                freq[chars[right] - 'A']--;
+                left++;
+            }
+            res = Math.max(res, right-left);
+        }
+        return res;
+    }
+    public int characterReplacement(String s, int k) {
+        boolean[] tmp = new boolean[26];
+        for(char ch: s.toCharArray()) {
+            tmp[ch-'A'] = true;
+        }
+        int res =0;
+        for (int i = 0; i < 26; i++) {
+            if(!tmp[i]) {continue;}
+            char target = (char)('A' + i);
+            int left =0,right=0,cnt =0;
+            while (right < s.length()) {
+                if(s.charAt(right)!=target) {
+                    cnt++;
+                }
+                while (cnt > k) {
+                    if(s.charAt(left)!=target) {
+                        cnt--;
+                    }
+                    left++;
+                }
+                res = Math.max(res, right-left+1);
+                right++;
+            }
+        }
+        return res;
+    }
+    public List<Integer> findAnagrams(String s, String p) {
+        int[] cnt = new int[26];
+        for(char c: p.toCharArray()) {
+            cnt[c-'a']++;
+        }
+        int left = 0, right = 0;
+        List<Integer> res = new ArrayList<>();
+        while(right < s.length()) {
+            if(cnt[s.charAt(right) - 'a'] > 0) {
+                cnt[s.charAt(right) - 'a']--;
+                right++;
+                if(right-left == p.length()) {
+                    res.add(left);
+                }
+            } else {
+                cnt[s.charAt(left) - 'a'] ++;
+                left++;
+            }
+        }
+        return res;
+    }
+    public int uniquePaths(int m, int n) {
+        int[][] dp = new int[m+1][n+1];
+        for (int i = 1; i <= m ; i++) {
+            for (int j = 1; j <= n ; j++) {
+                if(i == 1 || j == 1) {
+                    dp[i][j] = 1;
+                }
+            }
+        }
+        for (int i = 2; i <= m ; i++) {
+            for (int j = 2; j <= n ; j++) {
+                dp[i][j] = dp[i-1][j] + dp[i][j-1];
+            }
+        }
+        return dp[m][n];
+    }
+    public int numIslands(char[][] grid) {
+        int[] dx = {1, 0, 0, -1};
+        int[] dy = {0, 1, -1, 0};
+        int m = grid.length;
+        int n = grid[0].length;
+        int count = 0;
+        Deque<int[]> deque = new LinkedList<>();
+        boolean[][] visited = new boolean[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if(grid[i][j] == '1' && !visited[i][j]) {
+                    deque.offer(new int[]{i,j});
+                    visited[i][j] = true;
+                    while (!deque.isEmpty()) {
+                        int[] pop = deque.poll();
+                        for (int k = 0; k < 4; k++) {
+                            int mx = pop[0] + dx[k], my = pop[1] + dy[k];
+                            if(mx < 0 || mx >= m || my <0 || my>=n) {
+                                continue;
+                            }
+                            if(grid[mx][my] == '1' && !visited[mx][my]) {
+                                deque.offer(new int[]{mx, my});
+                                visited[mx][my] = true;
+                            }
+                        }
+                    }
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) {
+            return null;
+        }
+        while (root != null) {
+            if (root.val > p.val && root.val > q.val) {
+                root = root.left;
+            } else if (root.val < p.val && root.val < q.val) {
+                root = root.right;
+            } else {
+                return root;
+            }
+        }
+        return null;
+    }
+    public boolean isValidBST(TreeNode root) {
+        return dfsIsValidBST(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+    private boolean dfsIsValidBST(TreeNode node, long low, long high) {
+        if(node == null) {
+            return true;
+        }
+        if(node.val <= low || node.val >= high) {
+            return false;
+        }
+        return dfsIsValidBST(node.left, low, node.val) && dfsIsValidBST(node.right, node.val, high);
+    }
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(root == null) {
+            return res;
+        }
+        Deque<TreeNode> deque = new LinkedList<>();
+        deque.offer(root);
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            List<Integer> row = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = deque.poll();
+                row.add(poll.val);
+                if(poll.left != null) {
+                    deque.offer(poll.left);
+                }
+                if(poll.right != null) {
+                    deque.offer(poll.right);
+                }
+            }
+            res.add(row);
+        }
+        return res;
+    }
+
     public String robotWithString(String s) {
         Deque<Character> deque = new LinkedList<>();
         StringBuilder sb = new StringBuilder();
