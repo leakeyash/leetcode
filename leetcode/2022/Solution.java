@@ -32,6 +32,29 @@ public class Solution {
         System.out.println(Integer.toBinaryString(Integer.MAX_VALUE));
         new Solution().searchMatrix(new int[][]{new int[]{1}}, 1);
     }
+    public boolean areAlmostEqual(String s1, String s2) {
+        int n = s1.length();
+        char nextS2 = '0';
+        char nextS1 = '0';
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            if(s1.charAt(i)!=s2.charAt(i)) {
+                if(count == 0) {
+                    nextS2 = s1.charAt(i);
+                    nextS1 = s2.charAt(i);
+                    count++;
+                } else if(count == 1) {
+                    if(s1.charAt(i) != nextS1 || s2.charAt(i) != nextS2) {
+                        return false;
+                    }
+                    count++;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return count != 1;
+    }
     public List<String> topKFrequent(String[] words, int k) {
         Map<String, Integer> treeMap = new HashMap<>();
         for (int i = 0; i < words.length; i++) {
