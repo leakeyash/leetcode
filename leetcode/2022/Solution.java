@@ -1,36 +1,189 @@
-import linkedlist.ListNode;
-import org.w3c.dom.Node;
-import trees.TreeNode;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
 public class Solution {
-    class Node {
-        public int val;
-        public Node left;
-        public Node right;
-        public Node next;
-
-        public Node() {}
-
-        public Node(int _val) {
-            val = _val;
-        }
-
-        public Node(int _val, Node _left, Node _right, Node _next) {
-            val = _val;
-            left = _left;
-            right = _right;
-            next = _next;
-        }
-    };
 
     public static void main(String[] args) {
         System.out.println(Integer.toBinaryString(Integer.MAX_VALUE));
-        new Solution().searchMatrix(new int[][]{new int[]{1}}, 1);
+        new Solution().intervalIntersection(new int[][]{{0,2},{5,10},{13,23},{24,25}},new int[][]{{1,5},{8,12},{15,24},{25,26}});
+    }
+    public int findMin(int[] nums) {
+        int l =0, r = nums.length-1;
+        while (l<r) {
+            int mid = (l+r)>>>1;
+            if(nums[mid]>nums[r]) {
+                l = mid +1;
+            } else {
+                r= mid;
+            }
+        }
+        return nums[l];
+    }
+    public int findPeakElement(int[] nums) {
+        if(nums.length==1) {
+            return nums[0];
+        }
+        int l = 0, r= nums.length-1;
+        while (l<r) {
+            int mid = (l+r)>>>1;
+            if (nums[mid] > nums[mid+1]) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+    public int maxArea1MS(int[] height) {
+        int l = 0, r = height.length - 1;
+        int maxArea = 0;
+        while (l < r) {
+            int area = (r - l) * Math.min(height[l], height[r]);
+            maxArea = Math.max(maxArea, area);
+            int minH = Math.min(height[l], height[r]);
+            while (height[l] <= minH && l < r) {
+                l++;
+            }
+            while (height[r] <= minH && l < r) {
+                r--;
+            }
+        }
+        return maxArea;
+    }
+    public int maxArea(int[] height) {
+        int max = 0;
+        int left = 0;
+
+        while (left < height.length-1) {
+           int right = height.length - 1;
+           while(right > left) {
+               int preRight = height[right];
+               int amount = (right-left) * Math.min(height[left], height[right]);
+               max = Math.max(amount, max);
+               while(right>left && height[right] <= preRight) {
+                   right--;
+               }
+           }
+           int leftH = height[left];
+           while(left < height.length-1 && height[left] <= leftH) {
+               left++;
+           }
+        }
+        return max;
+    }
+    public int[][] intervalIntersection(int[][] firstList, int[][] secondList) {
+        int m = firstList.length;
+        int n = secondList.length;
+        if(m == 0 || n == 0){
+            return new int[][]{};
+        }
+        List<int[]> res = new ArrayList<>();
+        int i =0, j = 0;
+        while (i<m && j < n) {
+            int fs = firstList[i][0];
+            int fe = firstList[i][1];
+            int ss = secondList[j][0];
+            int se = secondList[j][1];
+            int maxS = Math.max(fs, ss);
+            int minE = Math.min(se, fe);
+            if(minE>=maxS) {
+                res.add(new int[]{maxS,minE});
+            }
+            if(fe > se) {
+                j++;
+            } else if (se > fe){
+                i++;
+            } else {
+                i++;
+                j++;
+            }
+        }
+        return res.toArray(new int[][]{});
+    }
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode res = new ListNode(-1);
+        res.next = head;
+        ListNode left = res;
+        ListNode right;
+        while (left.next != null) {
+            right = left.next.next;
+            boolean flag = false;
+            while(right!= null && right.val == left.next.val) {
+                right = right.next;
+                flag=true;
+            }
+            if(flag) {
+                left.next = right;
+            } else {
+                left = left.next;
+            }
+        }
+        return res.next;
+    }
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        if (n==0) {
+            return;
+        }
+        if(m ==0) {
+            while (n>0) {
+                n = n-1;
+                nums1[n] = nums2[n];
+            }
+            return;
+        }
+
+        int i = m-1;
+        int j = n-1;
+        int k = m+n-1;
+        while (i>=0 || j >=0) {
+            if(i>=0 && j>=0) {
+                if(nums1[i] >= nums2[j]) {
+                    nums1[k] = nums1[i];
+                    i--;
+                } else {
+                    nums1[k] = nums2[j];
+                    j--;
+                }
+            } else if(j>=0) {
+                nums1[k] = nums2[j];
+                j--;
+            } else {
+                i--;
+            }
+            k--;
+        }
+    }
+    public boolean containsDuplicate(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            if(set.contains(nums[i])) {
+                return true;
+            }
+            set.add(nums[i]);
+        }
+        return false;
+    }
+    public int numComponents(ListNode head, int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for(int i:nums) {
+            set.add(i);
+        }
+        int res = 0;
+        boolean pre = false;
+        while(head!=null) {
+            if(set.contains(head.val)) {
+                if(!pre) {
+                    res++;
+                    pre = true;
+                }
+            } else {
+                pre = false;
+            }
+            head = head.next;
+        }
+        return res;
     }
     public boolean areAlmostEqual(String s1, String s2) {
         int n = s1.length();
@@ -2812,5 +2965,39 @@ public class Solution {
             this.next = next;
         }
     }
+
+    private static class Node {
+        public int val;
+        public Node left;
+        public Node right;
+        public Node next;
+
+        public Node() {}
+
+        public Node(int _val) {
+            val = _val;
+        }
+
+        public Node(int _val, Node _left, Node _right, Node _next) {
+            val = _val;
+            left = _left;
+            right = _right;
+            next = _next;
+        }
+    }
+
+    private static class TreeNode {
+        public int val;
+        public TreeNode left;
+        public TreeNode right;
+        TreeNode() {}
+        public TreeNode(int val) { this.val = val; }
+        public TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
 }
 
