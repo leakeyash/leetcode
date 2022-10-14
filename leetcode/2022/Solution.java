@@ -1,3 +1,5 @@
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -7,7 +9,71 @@ public class Solution {
 
     public static void main(String[] args) {
         System.out.println(Integer.toBinaryString(Integer.MAX_VALUE));
-        new Solution().intervalIntersection(new int[][]{{0,2},{5,10},{13,23},{24,25}},new int[][]{{1,5},{8,12},{15,24},{25,26}});
+        new Solution().minSubArrayLen(7, new int[]{2,3,1,2,4,3});
+    }
+    public int findCircleNum(int[][] isConnected) {
+        int m = isConnected.length;
+        boolean[] visited = new boolean[m];
+        int res = 0;
+        for (int i = 0; i < m; i++) {
+            if(!visited[i]) {
+                dfsFindCircleNum(isConnected, visited, m, i);
+                res++;
+            }
+        }
+        return res;
+    }
+    private void dfsFindCircleNum(int[][] isConnected, boolean[] visited, int m, int i) {
+        for (int j = 0; j < m; j++) {
+            if(isConnected[i][j]==1&&!visited[j]) {
+                visited[j] = true;
+                dfsFindCircleNum(isConnected, visited, m, j);
+            }
+        }
+    }
+    public int minSubArrayLen(int target, int[] nums) {
+       int res = Integer.MAX_VALUE, sum = 0;
+       int left=0, right = 0;
+       while (right<nums.length) {
+           sum+=nums[right];
+           while(sum >= target) {
+               res = Math.min(res, right-left+1);
+               sum -= nums[left];
+               left++;
+           }
+           right++;
+       }
+       return res == Integer.MAX_VALUE ? 0 : res;
+    }
+    public int numSubarrayProductLessThanK(int[] nums, int k) {
+        if(k<=1){
+            return 0;
+        }
+        int res = 0;
+        int product = 1;
+        int left = 0, right = 0;
+        while (right < nums.length) {
+            product *= nums[right];
+            while(product >= k) {
+                product /= nums[left];
+                left++;
+            }
+            res += right-left + 1;
+            right++;
+        }
+        return res;
+    }
+    public int maxChunksToSorted(int[] arr) {
+        int res = 0;
+        int max = 0;
+        for (int i = 0; i < arr.length; i++) {
+            int cur = arr[i];
+            max = Math.max(cur, max);
+            if(max == i) {
+                res ++;
+            }
+        }
+        return res;
     }
     public int findMin(int[] nums) {
         int l =0, r = nums.length-1;
