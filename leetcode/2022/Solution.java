@@ -9,7 +9,385 @@ public class Solution {
 
     public static void main(String[] args) {
         System.out.println(Integer.toBinaryString(Integer.MAX_VALUE));
-        new Solution().minSubArrayLen(7, new int[]{2,3,1,2,4,3});
+        new Solution().numSquares(12);
+    }
+    public int numSquares(int n) {
+        int[] nums = new int[100];
+        for (int i = 0; i < 100; i++) {
+            nums[i] = (i+1) * (i+1);
+        }
+        Deque<Integer> queue = new LinkedList<>();
+        queue.offer(n);
+        boolean[] visited = new boolean[n+1];
+        visited[n] = true;
+        int res = 1;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int cur = queue.pop();
+                for (int j = 0; j < 100; j++) {
+                    if(cur == nums[j]) {
+                        return res;
+                    }
+                    if(cur > nums[j] && !visited[cur-nums[j]]) {
+                        queue.offer(cur - nums[j]);
+                        visited[cur-nums[j]] = true;
+                    } else if (cur < nums[j]){
+                        break;
+                    }
+                }
+            }
+            res++;
+        }
+        return res;
+    }
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        path.add(0);
+        dfsPathsSourceTarget(graph, path, 0, res);
+        return res;
+    }
+
+    private void dfsPathsSourceTarget(int[][] graph, List<Integer> path, int cur, List<List<Integer>> res) {
+        if(cur == graph.length - 1) {
+            res.add(new ArrayList<>(path));
+        }
+        for (int i : graph[cur]) {
+            path.add(i);
+            dfsPathsSourceTarget(graph, path, i,res);
+            path.remove(path.size()-1);
+        }
+    }
+    public void solve(char[][] board) {
+        int m = board.length;
+        int n = board[0].length;
+        if(m<=2|| n<=2) {
+            return;
+        }
+        Deque<int[]> queue = new LinkedList<>();
+        for (int i = 1; i < m-1; i++) {
+            if(board[i][0]=='O') {
+                queue.offer(new int[]{i,0});
+            }
+            if(board[i][n-1]=='O') {
+                queue.offer(new int[]{i,n-1});
+            }
+        }
+        for (int i = 1; i < n-1; i++) {
+            if(board[0][i]=='O') {
+                queue.offer(new int[]{0,i});
+            }
+            if(board[m-1][i]=='O') {
+                queue.offer(new int[]{m-1,i});
+            }
+        }
+        boolean[][] cache = new boolean[m][n];
+        int[][] d = new int[][]{{-1,0},{1,0},{0,-1},{0,1}};
+        boolean[][] visited = new boolean[m][n];
+        while (!queue.isEmpty()) {
+            int[] cell = queue.pop();
+            int x = cell[0];
+            int y = cell[1];
+
+            for (int[] ints : d) {
+                int mx = x + ints[0];
+                int my = y + ints[1];
+                if (mx >= 1 && mx < m-1 && my >= 1 && my < n-1 && board[mx][my] == 'O' && !visited[mx][my]) {
+                    queue.offer(new int[]{mx, my});
+                    cache[mx][my] = true;
+                    visited[mx][my] = true;
+                }
+            }
+        }
+        for (int i = 1; i < m-1; i++) {
+            for (int j = 1; j < n-1; j++) {
+                if(!cache[i][j] && board[i][j] == 'O') {
+                    board[i][j] ='X';
+                }
+            }
+        }
+    }
+    public long zeroFilledSubarray(int[] nums) {
+        int minZ =-1, noZero = -1;
+        long ans = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if(nums[i] == 0) {
+                minZ = i;
+            } else {
+                noZero = i;
+            }
+            ans += Math.max(0, minZ-noZero);
+        }
+        return ans;
+    }
+    public long countSubarrays(int[] nums, int minK, int maxK) {
+        var ans = 0L;
+        int n = nums.length, minI = -1, maxI = -1, i0 = -1;
+        for (var i = 0; i < n; ++i) {
+            var x = nums[i];
+            if (x == minK) {
+                minI = i;
+            }
+            if (x == maxK) {
+                maxI = i;
+            }
+            if (x < minK || x > maxK) {
+                i0 = i; // 子数组不能包含 nums[i0]
+            }
+            ans += Math.max(Math.min(minI, maxI) - i0, 0);
+        }
+        return ans;
+    }
+    public boolean sumOfNumberAndReverse(int num) {
+        if(num==0 || num==1) {
+            return false;
+        }
+        for (int i = num/2; i < num; i++) {
+            if(i + Integer.parseInt(new StringBuilder().append(i).reverse().toString()) == num) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public int countDistinctIntegers(int[] nums) {
+        Set<Integer> sets = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            sets.add(nums[i]);
+            sets.add(Integer.parseInt(new StringBuilder().append(nums[i]).reverse().toString()));
+        }
+        return sets.size();
+    }
+    public int findMaxK(int[] nums) {
+        Arrays.sort(nums);
+        Set<Integer> sets = new HashSet<>();
+        for (int i = 0; i < nums.length - 1; i++) {
+            if(nums[i]<0) {
+                sets.add(nums[i]);
+            } else {
+                break;
+            }
+        }
+        for (int i = nums.length-1; i >=0 ; i--) {
+            if(nums[i] > 0 && sets.contains(-nums[i])) {
+                return nums[i];
+            } else if (nums[i]<0) {
+                break;
+            }
+        }
+        return -1;
+    }
+    public int shortestPathBinaryMatrix(int[][] grid) {
+        if(grid[0][0] == 1){
+            return -1;
+        }
+        int m = grid.length;
+        int n = grid[0].length;
+        Deque<int[]> queue = new LinkedList<>();
+        queue.add(new int[]{0,0});
+        grid[0][0] = 1;
+        int[][] d = new int[][]{{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{1,0},{1,1}};
+        int path = 1;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] cell = queue.pop();
+                int x = cell[0];
+                int y = cell[1];
+                if(x == m-1 && y == n-1 ) {
+                    return path;
+                }
+                for (int[] ints : d) {
+                    int mx = x + ints[0];
+                    int my = y + ints[1];
+                    if (mx >= 0 && mx < m && my >= 0 && my < n && grid[mx][my] == 0) {
+                        queue.offer(new int[]{mx, my});
+                        grid[mx][my] = 1;
+                    }
+                }
+            }
+            path++;
+        }
+        return -1;
+    }
+    public boolean isAnagram(String s, String t) {
+        if(s.length()!=t.length()) {
+            return false;
+        }
+        int[] cache = new int[26];
+        for(char ch: s.toCharArray()) {
+            cache[ch-'a']++;
+        }
+        for(char ch: t.toCharArray()) {
+            cache[ch-'a']--;
+        }
+        for (int i = 0; i < 26; i++) {
+            if(cache[i]!=0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public boolean canConstruct(String ransomNote, String magazine) {
+        int[] cache = new int[26];
+        for(char ch: magazine.toCharArray()) {
+            cache[ch-'a']++;
+        }
+        for(char ch: ransomNote.toCharArray()) {
+            cache[ch-'a']--;
+            if(cache[ch-'a']<0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public int firstUniqChar(String s) {
+        int[] cache = new int[26];
+        for(char ch: s.toCharArray()) {
+            cache[ch-'a']++;
+        }
+        for (int i = 0; i < s.length(); i++) {
+            if(cache[s.charAt(i)-'a']==1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    public int minimizeArrayValue(int[] nums) {
+        int max = nums[0];
+        int maxIndex = 0;
+        for (int i = 1; i < nums.length; i++) {
+            if(nums[i] > max) {
+                max = nums[i];
+                maxIndex = i;
+            }
+        }
+        if(maxIndex == 0) {
+            return max;
+        }
+        int m = (nums[maxIndex] - nums[maxIndex-1] +1)/2;
+        nums[maxIndex] = nums[maxIndex] - m;
+        nums[maxIndex-1] += m;
+        return minimizeArrayValue(Arrays.copyOf(nums, maxIndex));
+    }
+    public int[] productQueries(int n, int[][] queries) {
+        String binaryString = Integer.toBinaryString(n);
+        List<Integer> powers = new ArrayList<>();
+        for (int i = binaryString.length()-1; i >=0; i--) {
+            if(binaryString.charAt(i)=='1') {
+                powers.add((int)Math.pow(2,binaryString.length()-1-i));
+            }
+        }
+        int[] res = new int[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            long sum = powers.get(queries[i][0]) % 1000000007;
+            for (int j = queries[i][0]+1; j <= queries[i][1]; j++) {
+                sum *=  powers.get(j) % 1000000007;
+                sum %= 1000000007;
+            }
+            res[i] = (int)(sum % 1000000007);
+        }
+        return res;
+    }
+    public int countTime(String time) {
+        int res = 1;
+        if(time.charAt(0)=='?' && time.charAt(1)!='?') {
+            if(time.charAt(1)<='3') {
+                res = res * 3;
+            } else {
+                res = res * 2;
+            }
+        } else if (time.charAt(0) == '?' && time.charAt(1) == '?') {
+            res = res * 24;
+        } else if (time.charAt(0)!='?' && time.charAt(1) == '?') {
+            if(time.charAt(0)=='2') {
+                res = res * 4;
+            } else {
+                res = res * 10;
+            }
+        }
+        if(time.charAt(3)=='?' && time.charAt(4)!='?') {
+            res = res * 6;
+        } else if (time.charAt(3)=='?' && time.charAt(4)=='?') {
+            res = res * 60;
+        } else if (time.charAt(3)!='?' && time.charAt(4)=='?') {
+            res = res * 10;
+        }
+        return res;
+    }
+    public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+        return dfsSubtree(root, subRoot);
+    }
+    private boolean dfsSubtree(TreeNode root, TreeNode subRoot) {
+        if(root == null) {
+            return false;
+        }
+        return checkSubtree(root,subRoot) || dfsSubtree(root.left, subRoot) || dfsSubtree(root.right,subRoot);
+    }
+
+    private boolean checkSubtree(TreeNode root, TreeNode subRoot) {
+        if(root==null && subRoot==null) {
+            return true;
+        }
+        if(root == null || subRoot == null || root.val!=subRoot.val) {
+            return false;
+        }
+        return checkSubtree(root.left, subRoot.left) && checkSubtree(root.right,subRoot.right);
+    }
+    public boolean isValidSudoku(char[][] board) {
+        int[][] rows = new int[9][9];
+        int[][] cols = new int[9][9];
+        int[][] squares = new int[9][9];
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if(board[i][j]!='.') {
+                    int ch = board[i][j] - '1';
+                    rows[i][ch]++;
+                    cols[j][ch]++;
+                    squares[(i/3)*3 + j/3][ch]++;
+                    if(rows[i][ch] >1 || cols[j][ch] > 1 || squares[(i/3)*3 + j/3][ch] >1) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    public int[][] matrixReshape(int[][] mat, int r, int c) {
+        int m = mat.length;
+        int n = mat[0].length;
+        if(m*n!= r*c || (m == r && n ==c)) {
+            return mat;
+        }
+        int[][] res = new int[r][c];
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                int num = i * c + j;
+                int x = num / n;
+                int y = num % n;
+                res[i][j] = mat[x][y];
+            }
+        }
+        return res;
+    }
+    public int[] intersect(int[] nums1, int[] nums2) {
+        Map<Integer, Integer> map1 = new HashMap<>();
+        Map<Integer, Integer> map2 = new HashMap<>();
+        for (int i = 0; i < nums1.length; i++) {
+            map1.put(nums1[i], map1.getOrDefault(nums1[i], 0) + 1);
+        }
+        for (int i = 0; i < nums2.length; i++) {
+            map2.put(nums2[i], map2.getOrDefault(nums2[i], 0) +1);
+        }
+        List<Integer> res = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry: map1.entrySet()) {
+            if(map2.containsKey(entry.getKey())) {
+                for (int i = 0; i < Math.min(entry.getValue(), map2.get(entry.getKey())); i++) {
+                    res.add(entry.getKey());
+                }
+            }
+        }
+        return res.stream().mapToInt(Integer::intValue).toArray();
     }
     public int findCircleNum(int[][] isConnected) {
         int m = isConnected.length;
@@ -840,6 +1218,7 @@ public class Solution {
             }
         }
     }
+    // 116. Populating Next Right Pointers in Each Node
     public Node connect(Node root) {
         if(root == null) {
             return null;
