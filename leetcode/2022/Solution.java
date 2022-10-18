@@ -11,6 +11,36 @@ public class Solution {
         System.out.println(Integer.toBinaryString(Integer.MAX_VALUE));
         new Solution().numSquares(12);
     }
+    //83. Remove Duplicates from Sorted List
+    public ListNode deleteDuplicatesI(ListNode head) {
+        if(head==null) {
+            return head;
+        }
+        ListNode cur = head;
+        while (cur.next!=null) {
+            if(cur.next.val == cur.val) {
+                cur.next = cur.next.next;
+            } else {
+                cur = cur.next;
+            }
+        }
+        return head;
+    }
+    public ListNode removeElements(ListNode head, int val) {
+        ListNode res = new ListNode(-1);
+        res.next = head;
+        ListNode pre = res;
+        ListNode cur = head;
+        while (cur!=null) {
+            if(cur.val == val) {
+                pre.next = cur.next;
+            } else {
+                pre = cur;
+            }
+            cur = cur.next;
+        }
+        return res.next;
+    }
     public int numSquares(int n) {
         int[] nums = new int[100];
         for (int i = 0; i < 100; i++) {
