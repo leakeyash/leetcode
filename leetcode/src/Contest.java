@@ -10,7 +10,118 @@ import java.util.stream.Stream;
 public class Contest {
     public static void main(String[] args) {
         System.out.println("Hello");
-        new Contest().makeIntegerBeautiful(8L, 2);
+        var res = new Contest().totalCost(new int[]{17,12,10,2,7,2,11,20,8}, 3, 4);
+        System.out.println(res);
+    }
+    public long minimumTotalDistance(List<Integer> robot, int[][] factory) {
+        Collections.sort(robot);
+        Arrays.sort(factory, (o, p) -> o[0] - p[0]);
+        long[] dp = new long[robot.size() + 1];
+        for (int i = 1; i <= robot.size(); i++) {
+            dp[i] = 1000000000000L;
+        }
+        for (int i = 0; i < factory.length; i++) {
+            for (int j = robot.size(); j > 0; j--) {
+                for (long k = 1, sum = 0; k <= Math.min(factory[i][1], j); k++) {
+                    dp[j] = Math.min(dp[j], dp[j - (int) k] + (sum += Math.abs(factory[i][0] - robot.get(j - (int) k))));
+                }
+            }
+        }
+        return dp[robot.size()];
+    }
+    public long totalCost(int[] costs, int k, int candidates) {
+        long res = 0;
+        if(costs.length <= candidates * 2) {
+            PriorityQueue<Integer> pq = new PriorityQueue<>();
+            for (int i = 0; i < costs.length; i++) {
+                pq.add(costs[i]);
+            }
+            for (int i = 0; i < k; i++) {
+                res += pq.poll();
+            }
+            return res;
+        }
+
+        if(costs.length > candidates * 2) {
+            PriorityQueue<Integer> pq1 = new PriorityQueue<>();
+            PriorityQueue<Integer> pq2 = new PriorityQueue<>();
+            int leftIndex = candidates;
+            int rightIndex = costs.length - candidates - 1;
+            for (int i = 0; i < candidates; i++) {
+                pq1.add(costs[i]);
+                pq2.add(costs[costs.length - 1- i]);
+            }
+            int n = 0;
+            while (n < k) {
+                if(!pq1.isEmpty() && !pq2.isEmpty() ) {
+                    if(pq1.peek() <= pq2.peek()) {
+                        res += pq1.poll();
+                        if(leftIndex <= rightIndex) {
+                            pq1.add(costs[leftIndex]);
+                            leftIndex++;
+                        }
+                    } else {
+                        res += pq2.poll();
+                        if(leftIndex <= rightIndex) {
+                            pq2.add(costs[rightIndex]);
+                            rightIndex--;
+                        }
+                    }
+                }
+                else if(!pq1.isEmpty()) {
+                    res += pq1.poll();
+                } else if(!pq2.isEmpty()){
+                    res += pq2.poll();
+                }
+                n++;
+            }
+            return res;
+        }
+        return 0;
+    }
+    public long maximumSubarraySum(int[] nums, int k) {
+        long sum = 0;
+        Map<Integer, Integer> set = new HashMap<>();
+        long res = 0;
+        boolean flag = false;
+        for (int i = 0; i < k; i++) {
+            sum += nums[i];
+            if(set.containsKey(nums[i])) {
+                flag = true;
+            }
+            set.put(nums[i], set.getOrDefault(nums[i],0)+1);
+        }
+        res = flag ? 0 : sum;
+        for (int i = k; i < nums.length; i++) {
+            sum -= nums[i-k];
+            set.put(nums[i-k], set.get(nums[i-k])-1);
+            if(set.get(nums[i-k]) == 0) {
+                set.remove(nums[i-k]);
+            }
+            sum += nums[i];
+            set.put(nums[i], set.getOrDefault(nums[i],0)+1);
+            if(set.size() == k) {
+                res = Math.max(res, sum);
+            }
+        }
+        return res;
+    }
+    public int[] applyOperations(int[] nums) {
+        for (int i = 0; i < nums.length - 1; i++) {
+            if(nums[i] == nums[i+1]) {
+                nums[i] = nums[i] * 2;
+                nums[i+1] = 0;
+            }
+        }
+        int[] res = new int[nums.length];
+        int index = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if(nums[i] != 0) {
+                res[index] = nums[i];
+                index++;
+            }
+        }
+        return res;
     }
     public long makeIntegerBeautiful(long n, int target) {
         int bits = 0;

@@ -6,10 +6,47 @@ import java.util.LinkedList;
 public class Solution {
     public static void main(String[] args) {
         System.out.println("test");
-        System.out.println(new Solution().maxRepeating("aaabaaaabaaabaaaabaaaabaaaabaaaaba",
-                "aaaba"));
+        System.out.println(
+                new Solution()
+                        .searchRange(new int[]{1}, 1)
+        );
+    }
+    public int search(int[] nums, int target) {
+        int left = 0, right = nums.length-1;
+        while(left <= right) {
+            int mid = (left + right) >>> 1;
+            if(nums[mid] == target) {
+                return mid;
+            }
+            if(nums[mid] > target) {
+                if(nums[left] > target) {
+                    return mid;
+                }
+            }
+        }
+        return -1;
+    }
+    public int[] searchRange(int[] nums, int target) {
+        int left = binarySearch(nums, target);
+        int right = binarySearch(nums, target+1)-1;
+        if(left<=right && left>=0 && right <= nums.length-1) {
+            return new int[]{left,right};
+        }
+        return new int[]{-1,-1};
     }
 
+    public int binarySearch(int[] nums, int target) {
+        int left = 0, right = nums.length-1;
+        while(left <= right) {
+            int mid = (left + right + 1) >>> 1;
+            if(nums[mid] >= target) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
     public int maxRepeating(String sequence, String word) {
         int left = 0;
         int res = 0;
