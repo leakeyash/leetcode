@@ -27,6 +27,8 @@ My target is 1800 in weekly contests, I suppose the target date is before the en
 
 Weekly contest: <https://leetcode.cn/contest/weekly-contest-86/ranking/>  
 Bi-Weekly contest: <https://leetcode.cn/contest/biweekly-contest-86/ranking/>
+Predictor: https://lcpredictor.onrender.com/  
+Stat: https://clist.by/coder/leakeyash/ 
 
 ## 寻找和自己竞赛积分接近的题
 
