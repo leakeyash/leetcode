@@ -2,6 +2,7 @@ import helper.ListNode;
 import helper.Node;
 import helper.TreeNode;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.IntStream;
@@ -10,8 +11,165 @@ import java.util.stream.Stream;
 public class Contest {
     public static void main(String[] args) {
         System.out.println("Hello");
-        var res = new Contest().totalCost(new int[]{17,12,10,2,7,2,11,20,8}, 3, 4);
+        var res = new Contest().maxPalindromes("abaccdbbd",3);
         System.out.println(res);
+    }
+    int res = 0;
+    public int maxPalindromes(String s, int k) {
+        int[] index = new int[s.length()], dp = new int[s.length() + 1];
+        for (int i = 0; i < 2 * s.length(); i++) {
+            for (int l = i / 2, r = l + i % 2; l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r); l--, r++) {
+                index[r] = Math.max(index[r], r - l + 1 < k ? 0 : l + 1);
+            }
+        }
+        for (int i = 0; i < s.length(); i++) {
+            dp[i + 1] = Math.max(dp[i], index[i] > 0 ? 1 + dp[index[i] - 1] : 0);
+        }
+        return dp[s.length()];
+    }
+
+    public boolean isPalindrome(String s) {
+        StringBuilder sgood = new StringBuilder();
+        int length = s.length();
+        for (int i = 0; i < length; i++) {
+            char ch = s.charAt(i);
+            if (Character.isLetterOrDigit(ch)) {
+                sgood.append(Character.toLowerCase(ch));
+            }
+        }
+        StringBuffer sgood_rev = new StringBuffer(sgood).reverse();
+        return sgood.toString().equals(sgood_rev.toString());
+    }
+
+    public int minimumOperations(TreeNode root) {
+        Deque<TreeNode> deque = new LinkedList<>();
+        deque.add(root);
+        int sum = 0;
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = deque.poll();
+                list.add(poll.val);
+
+                if(poll.left != null) {
+                    deque.add(poll.left);
+                }
+                if(poll.right != null) {
+                    deque.add(poll.right);
+                }
+            }
+            sum += count(list);
+        }
+        return sum;
+    }
+
+    private int count(List<Integer> list) {
+        int res = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(list);
+        for (int i = 0; i < list.size(); i++) {
+            map.put(list.get(i),i);
+        }
+        for (int i = 0; i < list.size(); i++) {
+            if(list.get(i).equals(priorityQueue.peek())) {
+                priorityQueue.poll();
+                continue;
+            }
+            Integer poll = priorityQueue.poll();
+            int index = map.get(poll);
+            list.set(index, list.get(i));
+            map.put(list.get(i), index);
+            list.set(i, poll);
+            map.put(poll, i);
+            res ++;
+        }
+        return res;
+    }
+    public int subarrayLCM(int[] nums, int k) {
+        int sum = 0;
+        for (int i = 0; i < nums.length;i++) {
+            if(nums[i] == k) {
+                sum ++;
+                int j = i + 1;
+                while (j< nums.length && k % nums[j] == 0) {
+                    j++;
+                }
+                sum += j - i - 1;
+            } else {
+                int j = i + 1;
+                int lcm = nums[i];
+                while (j< nums.length) {
+                    lcm = lcm(lcm,nums[j]);
+                    if(lcm == k) {
+                        sum++;
+                        j++;
+                    } else if (lcm < k) {
+                        j++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+        }
+        return sum;
+    }
+
+    public  static  int gcd(int a,int b){
+        int min=Math.min(a,b);
+        int max=Math.max(a,b);
+        a=max;
+        b=min;
+        while(b>0){
+            int c=a%b;
+            a=b;
+            b=c;
+        }
+        return a;
+    }
+
+    public static int lcm(int a,int b){
+        return a*b/gcd(a,b);
+    }
+
+    public double[] convertTemperature(double celsius) {
+        double kelvin = celsius + 273.15;
+        double fahrenheit = celsius * 1.80 + 32.00;
+        return new double[]{(double)Math.round(kelvin * 100000)/100000, (double)Math.round(fahrenheit * 100000)/100000};
+    }
+
+
+    public String[] splitMessage(String message, int limit) {
+        for (int i = 1, j = 1; i <= message.length(); j += ("" + ++i).length()) {
+            if ((3 + ("" + i).length()) * i + j + message.length() <= limit * i) {
+                String[] result = new String[i];
+                for (int k = 1, m = 0; k <= i; k++) {result[k - 1] = message.substring(m,
+                            Math.min(message.length(), m += Math.max(0, limit - 3 - ("" + i + k).length()))) + '<' + k
+                            + '/' + i + '>';
+                }
+                return result;
+            }
+        }
+        return new String[0];
+    }
+    public int countGoodStrings(int low, int high, int zero, int one) {
+        int[] dp = new int[high + 1];
+        dp[0] = 1;
+        int count = 0;
+        for (int i = 1; i <= high; i++) {
+            dp[i] = ((i < zero ? 0 : dp[i - zero]) + (i < one ? 0 : dp[i - one])) % 1000000007;
+            count = (count + dp[i] * (i < low ? 0 : 1)) % 1000000007;
+        }
+        return count;
+    }
+    public int distinctAverages(int[] nums) {
+        Arrays.sort(nums);
+        Set<Double> res = new HashSet<>();
+        for (int i = 0; i < nums.length/2; i++) {
+            res.add((double)(nums[i] + nums[nums.length - 1 -i])/2);
+        }
+        return res.size();
     }
     public long minimumTotalDistance(List<Integer> robot, int[][] factory) {
         Collections.sort(robot);
