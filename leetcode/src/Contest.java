@@ -1,3 +1,5 @@
+import archive.trees.TreeNodeFactory;
+import helper.BinaryNode;
 import helper.ListNode;
 import helper.Node;
 import helper.TreeNode;
@@ -11,10 +13,150 @@ import java.util.stream.Stream;
 public class Contest {
     public static void main(String[] args) {
         System.out.println("Hello");
-        var res = new Contest().maxPalindromes("abaccdbbd",3);
+        var res = new Contest().countPalindromes("103301");
         System.out.println(res);
     }
-    int res = 0;
+    public int countPalindromes(String s) {
+        long right[] = new long[10], r[][] = new long[s.length()][100], count = 0;
+        for (int i = s.length() - 1; i > 0; right[s.charAt(i--) - '0']++) {
+            r[i - 1] = r[i].clone();
+            for (int j = 0; j <= 9; j++) {
+                r[i - 1][s.charAt(i) - '0' + 10 * j] = (r[i - 1][s.charAt(i) - '0' + 10 * j] + right[j]) % 1000000007;
+            }
+        }
+        for (int i = 0; i <= 99; i++) {
+            for (int j = 0, left[] = new int[10], l[] = new int[100]; j < s.length(); left[s.charAt(j++) - '0']++) {
+                count = (count + l[i] * r[j][i]) % 1000000007;
+                for (int k = 0; k <= 9; k++) {
+                    l[s.charAt(j) - '0' + 10 * k] = (l[s.charAt(j) - '0' + 10 * k] + left[k]) % 1000000007;
+                }
+            }
+        }
+        return (int) count;
+
+    }
+    public int bestClosingTime(String customers) {
+        int len = customers.length();
+        int least = len+2;
+        int index = 0;
+        int[] dp = new int[len+1];
+        for (int i = 0; i < len; i++) {
+            if(customers.charAt(i) == 'Y') {
+                dp[0]++;
+            }
+        }
+        for (int i = 1; i < len+1; i++) {
+            if(customers.charAt(i-1) == 'Y') {
+                dp[i] = dp[i-1] - 1;
+            } else {
+                dp[i] = dp[i-1] + 1;
+            }
+        }
+        for (int i = 0; i < len; i++) {
+            if(dp[i] < least) {
+                least = dp[i];
+                index = i;
+            }
+        }
+        return index;
+    }
+    public int[][] onesMinusZeros(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] onesRow = new int[m];
+        int[] onesCol = new int[n];
+        int[] zerosRow = new int[m];
+        int[] zerosCol = new int[n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if(grid[i][j] == 1) {
+                    onesRow[i]++;
+                    onesCol[j]++;
+                } else {
+                    zerosRow[i]++;
+                    zerosCol[j]++;
+                }
+            }
+        }
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                grid[i][j]= onesRow[i] + onesCol[j] - zerosRow[i] - zerosCol[j];
+            }
+        }
+        return grid;
+    }
+    public int numberOfCuts(int n) {
+        if(n == 1) {
+            return 0;
+        }
+        if(n % 2 == 0) {
+            return n/2;
+        }
+        return n;
+    }
+    private long result;
+    public long minimumFuelCost(int[][] roads, int seats) {
+        HashMap<Integer, List<Integer>> map = new HashMap<>();
+        for (int[] road : roads) {
+            map.computeIfAbsent(road[0], t -> new ArrayList<>()).add(road[1]);
+            map.computeIfAbsent(road[1], t -> new ArrayList<>()).add(road[0]);
+        }
+        for (int i : map.getOrDefault(0, List.of())) {
+            minimumFuelCost(i, 0, map, seats);
+        }
+        return result;
+    }
+
+    private int minimumFuelCost(int n, int from, HashMap<Integer, List<Integer>> map, int seats) {
+        int count = 1;
+        for (int i : map.get(n)) {
+            count += i == from ? 0 : minimumFuelCost(i, n, map, seats);
+        }
+        result += (count + seats - 1) / seats;
+        return count;
+    }
+    public List<List<Integer>> closestNodes(TreeNode root, List<Integer> queries) {
+        List<Integer> list = new ArrayList<>();
+        dfsTree(root, list);
+        TreeSet<Integer> map = new TreeSet<>(list);
+        List<List<Integer>> res = new ArrayList<>();
+        for(Integer i: queries) {
+            Integer floor = map.floor(i);
+            if(floor == null) {
+                floor = -1;
+            }
+            Integer ceiling = map.ceiling(i);
+            if(ceiling == null) {
+                ceiling = -1;
+            }
+            res.add(List.of(floor,ceiling));
+        }
+        return res;
+    }
+
+    private void dfsTree(TreeNode root, List<Integer> list) {
+        if(root == null) {
+            return;
+        }
+        dfsTree(root.left, list);
+        list.add(root.val);
+        dfsTree(root.right, list);
+    }
+    public int unequalTriplets(int[] nums) {
+        int cnt = 0;
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i+1; j < nums.length; j++) {
+                if(nums[j] != nums[i]) {
+                    for (int k = j+1; k < nums.length; k++) {
+                        if(nums[k]!=nums[i] && nums[k]!=nums[j]) {
+                            cnt++;
+                        }
+                    }
+                }
+            }
+        }
+        return cnt;
+    }
     public int maxPalindromes(String s, int k) {
         int[] index = new int[s.length()], dp = new int[s.length() + 1];
         for (int i = 0; i < 2 * s.length(); i++) {

@@ -17,4 +17,19 @@ public class TreeNode {
         this.left = left;
         this.right = right;
     }
+
+    public static TreeNode newBinaryTree(Integer... values){
+        TreeNode result = createBinaryTree(values, 0);
+        return result;
+    }
+
+    private static TreeNode createBinaryTree(Integer[] values, int index){
+        if(index<values.length && values[index] != null){
+            TreeNode treeNode = new TreeNode(values[index]);
+            treeNode.left = createBinaryTree(values, 2*index + 1);
+            treeNode.right = createBinaryTree(values, 2*index + 2);
+            return treeNode;
+        }
+        return null;
+    }
 }
