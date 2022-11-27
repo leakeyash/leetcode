@@ -13,8 +13,72 @@ import java.util.stream.Stream;
 public class Contest {
     public static void main(String[] args) {
         System.out.println("Hello");
-        var res = new Contest().countPalindromes("103301");
+        var res = new Contest().countSubarrays(new int[]{5,19,11,15,13,16,4,6,2,7,10,8,18,20,1,3,17,9,12,14}, 6);
         System.out.println(res);
+    }
+    public int countSubarrays(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>(Map.of(0, 1));
+        int i = 0, curr = 0, count;
+        for (; nums[i] != k; i++) {
+            map.put(curr += nums[i] < k ? -1 : 1, map.getOrDefault(curr, 0) + 1);
+        }
+        for (count = map.getOrDefault(curr, 0) + map.getOrDefault(curr - 1, 0); ++i < nums.length;) {
+            count += map.getOrDefault(curr += nums[i] < k ? -1 : 1, 0) + map.getOrDefault(curr - 1, 0);
+        }
+        return count;
+    }
+
+    public ListNode removeNodes(ListNode head) {
+        Deque<Integer> deque = new LinkedList<>();
+        while (head!=null) {
+            while (!deque.isEmpty() && deque.peek() < head.val) {
+                deque.pop();
+            }
+            deque.push(head.val);
+            head = head.next;
+        }
+        ListNode dummy = new ListNode(0);
+        ListNode tmp = dummy;
+        while (!deque.isEmpty()) {
+            tmp.next = new ListNode(deque.pollLast());
+            tmp = tmp.next;
+        }
+        return dummy.next;
+    }
+    public int appendCharacters(String s, String t) {
+        int indexS = 0;
+        int indexT = 0;
+        while (indexT < t.length() && indexS < s.length()) {
+            if(s.charAt(indexS) == t.charAt(indexT)) {
+                indexT++ ;
+                indexS++;
+            } else {
+                indexS++;
+            }
+        }
+        if(indexT == t.length()) {
+            return 0;
+        }
+        return t.length() - indexT;
+    }
+    public int pivotInteger(int n) {
+        int sum = 0;
+        for (int i = 1; i <= n; i++) {
+            sum+=i;
+        }
+        int left = 1;
+        int right = sum;
+        if(left == right) {
+            return 1;
+        }
+        for (int i = 2; i <= n; i++) {
+            left += i;
+            right -= i-1;
+            if(left == right) {
+                return i;
+            }
+        }
+        return -1;
     }
     public int countPalindromes(String s) {
         long right[] = new long[10], r[][] = new long[s.length()][100], count = 0;
