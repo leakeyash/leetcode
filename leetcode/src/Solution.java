@@ -11,6 +11,59 @@ public class Solution {
                 .pathSum(TreeNode.newBinaryTree(1000000000,1000000000,null,294967296,null,1000000000,null,1000000000,null,1000000000),0);
         System.out.println(res);
     }
+    class BSTIterator {
+        List<Integer> list = new ArrayList<>();
+        int index = 0;
+        public BSTIterator(TreeNode root) {
+            list.add(-1);
+            Deque<TreeNode> deque = new LinkedList<>();
+            while (root!=null || !deque.isEmpty()) {
+                while (root!=null) {
+                    deque.push(root);
+                    root = root.left;
+                }
+                TreeNode node = deque.pop();
+                list.add(node.val);
+                root = node.right;
+            }
+        }
+
+        public int next() {
+            return list.get(++index);
+        }
+
+        public boolean hasNext() {
+            return index + 1 < list.size();
+        }
+    }
+    public int kthSmallest(TreeNode root, int k) {
+        List<Integer> list = new ArrayList<>();
+        dfskthSmallest(root, list);
+        return list.get(k-1);
+    }
+
+    private void dfskthSmallest(TreeNode root, List<Integer> list) {
+        if(root == null) {
+            return;
+        }
+        dfskthSmallest(root.left, list);
+        list.add(root.val);
+        dfskthSmallest(root.right, list);
+    }
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return dfsSortedArrayToBST(nums, 0, nums.length-1);
+    }
+
+    private TreeNode dfsSortedArrayToBST(int[] nums, int left, int right) {
+        if(left > right) {
+            return null;
+        }
+        int mid = (left+right+1)>>>1;
+        TreeNode node = new TreeNode(nums[mid]);
+        node.left = dfsSortedArrayToBST(nums, left, mid-1);
+        node.right = dfsSortedArrayToBST(nums, mid+1, right);
+        return node;
+    }
     public int pathSum(TreeNode root, int targetSum) {
         if(root == null) {
             return 0;

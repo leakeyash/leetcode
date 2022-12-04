@@ -13,8 +13,87 @@ import java.util.stream.Stream;
 public class Contest {
     public static void main(String[] args) {
         System.out.println("Hello");
-        var res = new Contest().countSubarrays(new int[]{5,19,11,15,13,16,4,6,2,7,10,8,18,20,1,3,17,9,12,14}, 6);
+        var res = new Contest().minScore(36,
+        new int[][]{{7,11,418},{13,23,287},{16,25,7891},{15,7,9695},{4,3,9569},{17,7,1809},{14,3,4720},{14,4,6118},{9,2,4290},{32,17,5645},{14,16,426},{36,7,6721},{13,30,9444},{3,25,4635},{33,5,1669},{22,18,8910},{5,28,7865},{13,10,9466},{7,9,2457},{11,8,4711},{17,11,6308},{7,34,3789},{8,33,9659},{16,3,4187},{16,20,3595},{23,10,6251},{26,22,6180},{4,16,5577},{26,7,5398},{6,36,8671},{10,19,3028},{23,30,1330},{19,13,8315},{25,20,4740},{25,4,5818},{30,10,8030},{30,19,7527},{28,6,6804},{21,27,1746},{18,9,5189},{7,27,6560},{20,14,2450},{27,32,3951},{2,21,3927},{1,15,9283},{3,20,5428},{15,26,5871},{19,23,4533},{14,25,6992},{4,20,5831}}
+        );
         System.out.println(res);
+    }
+    public int minScore(int n, int[][] roads) {
+        Arrays.sort(roads, Comparator.comparingInt(a -> a[2]));
+        int minScore = roads[0][2];
+        int min = Integer.MAX_VALUE;
+        Map<Integer, List<int[]>> map = new HashMap<>();
+        Deque<Integer> deque = new LinkedList<>();
+        boolean[] visited = new boolean[n+1];
+        for (int j = 0; j < roads.length; j++) {
+            List<int[]> ints = map.getOrDefault(roads[j][0], new ArrayList<>());
+            ints.add(new int[]{roads[j][1], roads[j][2]});
+            map.put(roads[j][0], ints);
+            List<int[]> ints2 = map.getOrDefault(roads[j][1], new ArrayList<>());
+            ints2.add(new int[]{roads[j][0], roads[j][2]});
+            map.put(roads[j][1], ints2);
+            if(roads[j][0] == 1) {
+                deque.offer(roads[j][1]);
+                visited[1] = true;
+                min = Math.min(min, roads[j][2]);
+            } else if(roads[j][1] == 1) {
+                deque.offer(roads[j][0]);
+                visited[1] = true;
+                min = Math.min(min, roads[j][2]);
+            }
+        }
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            for (int i = 0; i < size; i++) {
+                Integer pop = deque.pop();
+
+                List<int[]> ints = map.get(pop);
+                for (int j = 0; j < ints.size(); j++) {
+                    if(!visited[ints.get(j)[0]]) {
+                        deque.offer(ints.get(j)[0]);
+                        visited[ints.get(j)[0]] = true;
+                    }
+
+                    min = Math.min(ints.get(j)[1], min);
+                }
+                if(min == minScore) {
+                    return minScore;
+                }
+            }
+        }
+        return min;
+    }
+    public long dividePlayers(int[] skill) {
+        Arrays.sort(skill);
+        int len = skill.length;
+        int sum = skill[0] + skill[len-1];
+        long res = 0;
+        for (int i = 0; i < len/2; i++) {
+            if(skill[i] + skill[len - i - 1] != sum) {
+                return -1;
+            }
+            res += (long)skill[i] * skill[len-i-1];
+        }
+        return res;
+    }
+    public boolean isCircularSentence(String sentence) {
+        String[] split = sentence.split(" ");
+        if(split.length == 1) {
+            return split[0].charAt(0) == split[0].charAt(split[0].length()-1);
+        }
+        for (int i = 1; i < split.length; i++) {
+            if(i == split.length-1) {
+                boolean bol = split[i].charAt(split[i].length() - 1) == split[0].charAt(0);
+                if(!bol) {
+                    return false;
+                }
+                boolean cur = split[i].charAt(0) == split[i-1].charAt(split[i-1].length() - 1);
+                if(!cur) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     public int countSubarrays(int[] nums, int k) {
         HashMap<Integer, Integer> map = new HashMap<>(Map.of(0, 1));
