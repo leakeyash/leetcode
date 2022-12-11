@@ -25,6 +25,8 @@ My target is 1800 in weekly contests, I suppose the target date is before the en
 | 2022-11-26 | 92 Bi-Weekly | 3 | 838/3055 | 1933/15664 | 1745 | +29 |
 | 2022-11-27 | 321 Weekly | 3 | 1380/5115 | 3463/17826 | 1759 | +14 |
 | 2022-12-04 | 322 Weekly | 3 | 1498/5085 | 4122/19626 | | |
+| 2022-12-10 | 93 Bi-Weekly | 2 | | 5215/17080 | | |
+| 2022-12-11 | 323 Weekly | 3 |  | 2722/17631 | | |
 
 ## leetcode links
 

@@ -5,6 +5,7 @@ import helper.Node;
 import helper.TreeNode;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.IntStream;
@@ -13,10 +14,202 @@ import java.util.stream.Stream;
 public class Contest {
     public static void main(String[] args) {
         System.out.println("Hello");
-        var res = new Contest().minScore(36,
-        new int[][]{{7,11,418},{13,23,287},{16,25,7891},{15,7,9695},{4,3,9569},{17,7,1809},{14,3,4720},{14,4,6118},{9,2,4290},{32,17,5645},{14,16,426},{36,7,6721},{13,30,9444},{3,25,4635},{33,5,1669},{22,18,8910},{5,28,7865},{13,10,9466},{7,9,2457},{11,8,4711},{17,11,6308},{7,34,3789},{8,33,9659},{16,3,4187},{16,20,3595},{23,10,6251},{26,22,6180},{4,16,5577},{26,7,5398},{6,36,8671},{10,19,3028},{23,30,1330},{19,13,8315},{25,20,4740},{25,4,5818},{30,10,8030},{30,19,7527},{28,6,6804},{21,27,1746},{18,9,5189},{7,27,6560},{20,14,2450},{27,32,3951},{2,21,3927},{1,15,9283},{3,20,5428},{15,26,5871},{19,23,4533},{14,25,6992},{4,20,5831}}
-        );
+        var res = new Contest().maxPoints(new int[][]{{1,2,3},{2,5,7},{3,5,1}}, new int[]{5,6,2});
         System.out.println(res);
+       // new Contest().test();
+    }
+    public int maxAreaOfIslandDFS(int[][] grid) {
+        int max = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == 1) {
+                    max = Math.max(max, dfsMaxAreaOfIsland(grid, 0, i, j));
+                }
+            }
+        }
+        return max;
+    }
+
+    private int dfsMaxAreaOfIsland(int[][] grid, int size, int i, int j) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length || grid[i][j] != 1) {
+            return size;
+        } else {
+            grid[i][j] = 0;
+            size++;
+            size = dfsMaxAreaOfIsland(grid, size, i + 1, j);
+            size = dfsMaxAreaOfIsland(grid, size, i, j + 1);
+            size = dfsMaxAreaOfIsland(grid, size, i - 1, j);
+            size = dfsMaxAreaOfIsland(grid, size, i, j - 1);
+            return size;
+        }
+    }
+    public int[] maxPoints(int[][] grid, int[] queries) {
+        int[] res = new int[queries.length];
+        int m = grid.length;
+        int n = grid[0].length;
+        for (int i = 0; i < queries.length; i++) {
+            res[i] = dfsMaxPoints(grid, 0, 0, 0, queries[i], new boolean[m][n]);
+        }
+        return res;
+    }
+
+    private int dfsMaxPoints(int[][] grid, int size, int x, int y, int target, boolean[][] visited) {
+        if (x < 0 || x >= grid.length || y < 0 || y >= grid[0].length || visited[x][y] || grid[x][y] >= target) {
+            return size;
+        }
+        visited[x][y] = true;
+        System.out.println(x+":"+y+":"+target);
+        size++;
+        size = dfsMaxPoints(grid, size,x - 1, y, target,visited);
+        size = dfsMaxPoints(grid, size,x + 1, y, target,visited);
+        size = dfsMaxPoints(grid, size, x, y - 1, target,visited);
+        size = dfsMaxPoints(grid, size, x, y + 1, target,visited);
+        return size;
+    }
+    private void test() {
+        Allocator allocator = new Allocator(5);
+        allocator.free(4);
+        allocator.allocate(9,5);
+        allocator.allocate(5,8);
+    }
+    class Allocator {
+        int[] array;
+        public Allocator(int n) {
+            array = new int[n];
+        }
+
+        public int allocate(int size, int mID) {
+            int index = 0;
+            int cnt = 0;
+            int startIndex = index;
+            boolean exist = false;
+            while (index < array.length) {
+                if(array[index] == 0) {
+                    cnt++;
+                    index++;
+                    if(cnt == size) {
+                        exist = true;
+                        break;
+                    }
+                } else {
+                    index++;
+                    startIndex = index;
+                    cnt = 0;
+                }
+            }
+            if(!exist) {
+                return -1;
+            }
+            for (int i = startIndex; i < startIndex + size; i++) {
+                array[i] = mID;
+            }
+            return startIndex;
+        }
+
+        public int free(int mID) {
+            int cnt = 0;
+            for (int i = 0; i < array.length; i++) {
+                if(array[i] == mID) {
+                    array[i] = 0;
+                    cnt++;
+                }
+            }
+            return cnt;
+        }
+    }
+    public int longestSquareStreak(int[] nums) {
+        Arrays.sort(nums);
+        int res = -1;
+        Set<Integer> visited = new HashSet<>();
+        Set<Integer> numSet = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            numSet.add(nums[i]);
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if(visited.contains(nums[i])) {
+                continue;
+            }
+            int cnt = 0;
+            int cur = nums[i];
+            visited.add(cur);
+            while (cur <= 100000) {
+                cur = cur * cur;
+                if(numSet.contains(cur)) {
+                    cnt+=1;
+                    visited.add(cur);
+                } else {
+                    break;
+                }
+            }
+            if(cnt != 0) {
+                res = Math.max(res, cnt+1);
+            }
+        }
+        return res;
+    }
+    public int deleteGreatestValue(int[][] grid) {
+        int res = 0;
+        int cur = 0;
+        int index = 0;
+        for (int i = 0; i < grid.length; i++) {
+            Arrays.sort(grid[i]);
+        }
+        while (index < grid[0].length) {
+            cur = 0;
+            for (int i = 0; i < grid.length; i++) {
+                cur = Math.max(grid[i][index], cur);
+            }
+            res+=cur;
+            index++;
+        }
+        return res;
+    }
+    public int maxStarSum(int[] vals, int[][] edges, int k) {
+        Map<Integer, PriorityQueue<Integer>> map = new HashMap<>();
+        for (int i = 0; i < edges.length; i++) {
+            int[] edge = edges[i];
+            PriorityQueue<Integer> orDefault = map.getOrDefault(edge[0], new PriorityQueue<>((a,b)->b-a));
+            orDefault.offer(vals[edge[1]]);
+            map.put(edge[0], orDefault);
+            PriorityQueue<Integer> orDefault1 = map.getOrDefault(edge[1], new PriorityQueue<>((a,b)->b-a));
+            orDefault1.offer(vals[edge[0]]);
+            map.put(edge[1], orDefault1);
+        }
+        for (int i = 0; i < vals.length; i++) {
+            if(!map.containsKey(i)) {
+                map.put(i, new PriorityQueue<>());
+            }
+        }
+        int max = Integer.MIN_VALUE;
+        for (Map.Entry<Integer, PriorityQueue<Integer>> item: map.entrySet()) {
+            int cur = 0;
+            int curSum = vals[item.getKey()];
+            PriorityQueue<Integer> queue = item.getValue();
+            max = Math.max(curSum, max);
+            while(!queue.isEmpty() && cur < k) {
+                curSum += queue.poll();
+                cur ++;
+                max = Math.max(curSum, max);
+            }
+        }
+        return max;
+    }
+    public int maximumValue(String[] strs) {
+        int sum = 0;
+        for (int i = 0; i < strs.length; i++) {
+            int cur = -1;
+            for (int j = 0; j < strs[i].length(); j++) {
+                if (strs[i].charAt(j) >= 'a' && strs[i].charAt(j) <= 'z') {
+                    cur = strs[i].length();
+                    break;
+                }
+            }
+            if(cur == -1) {
+                cur = Integer.parseInt(strs[i]);
+            }
+            sum = Math.max(sum, cur);
+        }
+        return sum;
     }
     public int minScore(int n, int[][] roads) {
         Arrays.sort(roads, Comparator.comparingInt(a -> a[2]));

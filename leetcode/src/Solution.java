@@ -11,6 +11,28 @@ public class Solution {
                 .pathSum(TreeNode.newBinaryTree(1000000000,1000000000,null,294967296,null,1000000000,null,1000000000,null,1000000000),0);
         System.out.println(res);
     }
+
+    public int numberOfArithmeticSlices(int[] nums) {
+        if(nums.length<3) {
+            return 0;
+        }
+
+        int cnt = 0;
+        int index = 0;
+        while (index <= nums.length-3) {
+            int d = nums[index+1] - nums[index];
+            for (int i = index+2; i < nums.length; i++) {
+                if(nums[i] - nums[i-1]==d) {
+                    cnt++;
+                } else {
+                    break;
+                }
+            }
+            index++;
+        }
+
+        return cnt;
+    }
     class BSTIterator {
         List<Integer> list = new ArrayList<>();
         int index = 0;
